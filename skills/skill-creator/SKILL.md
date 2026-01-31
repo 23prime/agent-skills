@@ -188,7 +188,18 @@ The validation checks:
 
 If validation fails, fix the reported errors and run the command again.
 
-### Step 6: Iterate
+### Step 6: Lint the Skill
+
+Run the markdown linter to auto-fix and verify SKILL.md and any other markdown files in the skill:
+
+```bash
+mise run fix-md
+mise run check-md
+```
+
+If errors remain after auto-fix, manually correct them until `check-md` passes with zero errors.
+
+### Step 7: Iterate
 
 After testing the skill, users may request improvements. Often this happens right after using the skill, with fresh context of how the skill performed.
 
