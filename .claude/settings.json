@@ -5,11 +5,17 @@
       "Bash(git diff:*)",
       "Bash(git status:*)",
       "Bash(git ls-files:*)",
+      "Bash(git log:*)",
       "Bash(mise run check-md:*)",
       "Bash(mise check-md:*)",
       "Bash(mise run fix-md:*)",
       "Bash(mise fix-md:*)",
       "Bash(rm -f skills/:*)"
+    ],
+
+    "ask": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
