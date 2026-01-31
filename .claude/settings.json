@@ -7,7 +7,8 @@
       "Bash(git ls-files:*)",
       "Bash(mise check-md:*)",
       "Bash(mise fix-md:*)",
-      "Bash(mise run:*)"
+      "Bash(mise run:*)",
+      "Bash(rm -f skills/:*)"
     ]
   }
 }
