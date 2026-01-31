@@ -52,3 +52,8 @@ Skills use progressive disclosure: metadata → SKILL.md body → bundled resour
 - 2-space indentation for YAML, JSON, and Markdown
 - Markdown: unordered lists with dashes, emphasis/strong with asterisks, `<br>` is the only allowed HTML element
 - Python 3.14+
+
+## Shell Rules
+
+- Always use `rm -f` (never bare `rm`)
+- Run `git` commands in the current directory (do not use the `-C` option)
