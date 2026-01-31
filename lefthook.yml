@@ -1,0 +1,9 @@
+# See: https://lefthook.dev/configuration/
+
+pre-commit:
+  jobs:
+    - name: Fix markdown
+      run: mise fix-md
+
+    - name: Check markdown
+      run: mise check-md

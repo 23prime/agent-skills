@@ -1,0 +1,23 @@
+[tools]
+markdownlint-cli2 = "latest"
+lefthook = "latest"
+uv = "latest"
+
+[tasks.setup]
+description = "Setup tools"
+run = ["uv python install", "uv sync", "lefthook install"]
+alias = "s"
+
+[tasks.link]
+description = "Create a symbolic link to your each Claude directory."
+run = ["ln -sfn $(pwd)/skills ~/.claude-23prime/skills"]
+
+[tasks.fix-md]
+description = "Fix markdown"
+run = ["markdownlint-cli2 . --fix"]
+alias = "fm"
+
+[tasks.check-md]
+description = "Check markdown"
+run = ["markdownlint-cli2 ."]
+alias = "cm"

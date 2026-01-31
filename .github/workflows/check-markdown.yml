@@ -1,0 +1,36 @@
+name: Check Markdown
+
+on:
+  pull_request:
+    paths:
+      - "**/*.md"
+      - ".github/workflows/check-markdown.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install mise and setup
+        uses: jdx/mise-action@v3
+        with:
+          install: true
+          install_args: "markdownlint-cli2"
+          cache: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fix
+        run: mise fix-md
+
+      - name: Commit and Push
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "fix: Auto fix by workflow"
+
+      - name: Check
+        run: mise check-md
