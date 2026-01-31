@@ -4,7 +4,10 @@
       "Bash(uv run python:*)",
       "Bash(git diff:*)",
       "Bash(git status:*)",
-      "Bash(git ls-files:*)"
+      "Bash(git ls-files:*)",
+      "Bash(mise check-md:*)",
+      "Bash(mise fix-md:*)",
+      "Bash(mise run:*)"
     ]
   }
 }

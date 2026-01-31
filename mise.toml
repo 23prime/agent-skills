@@ -17,10 +17,10 @@ run = ["ln -sfn $(pwd)/skills {{vars.claude_home}}/skills"]
 
 [tasks.fix-md]
 description = "Fix markdown"
-run = ["markdownlint-cli2 . --fix"]
+run = ["markdownlint-cli2 '**/*.md' --fix"]
 alias = "fm"
 
 [tasks.check-md]
 description = "Check markdown"
-run = ["markdownlint-cli2 ."]
+run = ["markdownlint-cli2 '**/*.md'"]
 alias = "cm"
