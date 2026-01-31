@@ -31,5 +31,6 @@ See [Anthropic official document](https://platform.claude.com/docs/en/agents-and
 Create a symbolic link to your Claude directory to use skills as global.
 
 ```sh
-mise run link
+mise run link                   # default: `~/.claude`
+mise run link ~/.claude-23prime # specify custom directory
 ```

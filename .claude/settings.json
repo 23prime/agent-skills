@@ -5,9 +5,10 @@
       "Bash(git diff:*)",
       "Bash(git status:*)",
       "Bash(git ls-files:*)",
+      "Bash(mise run check-md:*)",
       "Bash(mise check-md:*)",
+      "Bash(mise run fix-md:*)",
       "Bash(mise fix-md:*)",
-      "Bash(mise run:*)",
       "Bash(rm -f skills/:*)"
     ]
   }

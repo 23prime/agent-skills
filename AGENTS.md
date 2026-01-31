@@ -42,7 +42,7 @@ Skills use progressive disclosure: metadata → SKILL.md body → bundled resour
 
 - **Markdown lint check**: `mise run check-md`
 - **Markdown lint fix**: `mise run fix-md`
-- **Link skills globally**: `mise run link` — creates a symlink to `~/.claude-23prime/skills`
+- **Link skills globally**: `mise run link` — creates a symlink to `~/.claude/skills`
 
 ## Skill Workflow
 
