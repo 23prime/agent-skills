@@ -10,7 +10,8 @@
       "Bash(mise check-md:*)",
       "Bash(mise run fix-md:*)",
       "Bash(mise fix-md:*)",
-      "Bash(rm -f skills/:*)"
+      "Bash(rm -f skills/:*)",
+      "Bash(coderabbit review --prompt-only)"
     ],
 
     "ask": [
