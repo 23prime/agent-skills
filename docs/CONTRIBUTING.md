@@ -58,4 +58,4 @@ Before committing, run the following to check and auto-fix, and confirm it passe
 
 ## Pull Requests
 
-Create a pull request following the [template](.github/PULL_REQUEST_TEMPLATE.md).
+Create a pull request following the [template](../.github/PULL_REQUEST_TEMPLATE.md).
