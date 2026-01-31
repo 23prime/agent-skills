@@ -2,6 +2,15 @@
 
 This file provides guidance to AI coding agents when working with code in this repository.
 
+## General agent rules
+
+- When users ask questions, answer them instead of doing the work.
+
+### Shell Rules
+
+- Always use `rm -f` (never bare `rm`)
+- Run `git` commands in the current directory (do not use the `-C` option)
+
 ## Project Overview
 
 A toolkit for creating and managing Agent Skills — reusable skill packages that extend Claude's capabilities with specialized workflows, tool integrations, and domain expertise. See [Anthropic official docs](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview).
@@ -52,8 +61,3 @@ Skills use progressive disclosure: metadata → SKILL.md body → bundled resour
 - 2-space indentation for YAML, JSON, and Markdown
 - Markdown: unordered lists with dashes, emphasis/strong with asterisks, `<br>` is the only allowed HTML element
 - Python 3.14+
-
-## Shell Rules
-
-- Always use `rm -f` (never bare `rm`)
-- Run `git` commands in the current directory (do not use the `-C` option)
