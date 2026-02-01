@@ -1,7 +1,7 @@
 {
   // Markdown
   "[markdown]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
   },
 }
