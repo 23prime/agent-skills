@@ -73,6 +73,7 @@ After the commit completes, run `git status` to verify success and report the re
 - Never amend a previous commit unless the user explicitly requests it.
 - Never push to a remote unless the user explicitly requests it.
 - If a pre-commit hook fails, fix the issue, re-stage, and create a **new** commit (do not amend).
+- Never add a `Co-Authored-By` trailer to the commit message.
 
 ## References
 
