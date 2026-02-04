@@ -1,11 +1,10 @@
 ---
-name: tdd-workflow
-description: テスト駆動開発（TDD）のワークフロー原則。RED-GREEN-REFACTOR サイクル。
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+name: practicing-tdd
+description: テスト駆動開発（TDD）のワークフロー原則と RED-GREEN-REFACTOR サイクル。新機能の実装、バグ修正、複雑なロジックの実装をテストファーストで行う場合に使用する。
 translated_from: SKILL.md
 ---
 
-# TDD Workflow
+# Practicing TDD
 
 > テストを先に書き、コードは後から。
 
