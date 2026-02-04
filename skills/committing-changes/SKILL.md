@@ -1,9 +1,9 @@
 ---
-name: commit
-description: Inspect the current git diff, compose a commit message following project conventions, and execute git commit. This skill should be used when the user asks to commit changes, requests a commit, or says they are done with a task and want to save their work.
+name: committing-changes
+description: Inspect the current git diff, compose a commit message following project conventions, and execute git commit. Use when the user asks to commit changes, requests a commit, or says they are done with a task and want to save their work.
 ---
 
-# Commit
+# Committing Changes
 
 Review the current working tree changes, compose a conventional commit message, and execute the commit.
 

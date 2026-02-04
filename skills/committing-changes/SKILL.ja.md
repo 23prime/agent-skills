@@ -1,10 +1,10 @@
 ---
-name: commit
+name: committing-changes
 description: 現在の git diff を確認し、プロジェクトの規約に従ったコミットメッセージを作成して git commit を実行する。ユーザーが変更のコミットを依頼したとき、作業が一区切りついたときに使用する。
 translated_from: SKILL.md
 ---
 
-# Commit
+# Committing Changes
 
 作業ツリーの変更内容を確認し、Conventional Commits 形式のコミットメッセージを作成してコミットを実行する。
 
