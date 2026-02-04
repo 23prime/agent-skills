@@ -1,9 +1,9 @@
 ---
-name: skill-translator-jp
-description: "Translate a skill's SKILL.md into Japanese and output it as SKILL.ja.md. This skill should be used when users want to translate a skill into Japanese, localize skills for Japanese speakers, or create Japanese versions of skills."
+name: translating-skills-jp
+description: Translate a skill's SKILL.md into Japanese and output it as SKILL.ja.md. Use when users want to translate a skill into Japanese, localize skills for Japanese speakers, or create Japanese versions of skills.
 ---
 
-# Skill Translator JP
+# Translating Skills JP
 
 エージェントスキルの SKILL.md を日本語に翻訳し、`SKILL.ja.md` として同ディレクトリに出力する。
 
