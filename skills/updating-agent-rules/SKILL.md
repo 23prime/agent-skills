@@ -1,9 +1,9 @@
 ---
-name: update-agent-rules
-description: Update AGENTS.md based on the current state of the repository. This skill should be used when repository configuration, structure, or tooling has changed and AGENTS.md needs to reflect those changes.
+name: updating-agent-rules
+description: Update AGENTS.md based on the current state of the repository. Use when repository configuration, structure, or tooling has changed and AGENTS.md needs to reflect those changes.
 ---
 
-# Update Agent Rules
+# Updating Agent Rules
 
 ## Overview
 

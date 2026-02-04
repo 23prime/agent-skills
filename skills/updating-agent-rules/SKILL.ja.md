@@ -1,10 +1,10 @@
 ---
-name: update-agent-rules
+name: updating-agent-rules
 description: リポジトリの現在の状態に基づいて AGENTS.md を更新する。リポジトリの設定、構造、ツールが変更され、AGENTS.md にその変更を反映する必要がある場合に使用する。
 translated_from: SKILL.md
 ---
 
-# Update Agent Rules
+# Updating Agent Rules
 
 ## 概要
 
