@@ -1,10 +1,10 @@
 ---
-name: markdown-writer
-description: プロジェクトの markdownlint ルールと editorconfig 設定に準拠した Markdown ファイルを書くためのスキル。Markdown ファイル (.md) の作成・編集時に lint エラーゼロを確保する場合に使用する。
+name: writing-markdown
+description: プロジェクトの markdownlint ルールと editorconfig 設定に準拠した Markdown ファイルを書く。Markdown ファイル (.md) の作成・編集時に lint エラーゼロを確保する場合に使用する。
 translated_from: SKILL.md
 ---
 
-# Markdown Writer
+# Writing Markdown
 
 プロジェクトで設定されたルールに基づき、`markdownlint-cli2` をエラーゼロで通過する Markdown を書く。
 

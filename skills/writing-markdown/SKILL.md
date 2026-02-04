@@ -1,9 +1,9 @@
 ---
-name: markdown-writer
-description: Write Markdown files that comply with the project's markdownlint rules and editorconfig settings. This skill should be used when creating or editing Markdown files (.md) to ensure they pass linting without errors.
+name: writing-markdown
+description: Write Markdown files that comply with the project's markdownlint rules and editorconfig settings. Use when creating or editing Markdown files (.md) to ensure they pass linting without errors.
 ---
 
-# Markdown Writer
+# Writing Markdown
 
 Write Markdown that passes `markdownlint-cli2` with zero errors, based on the project's configured rules.
 
