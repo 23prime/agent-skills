@@ -1,13 +1,9 @@
 ---
-name: quick-review
-description: Quick review of uncommitted changes (staged and unstaged) focusing on bugs and logic mistakes. This skill should be used when a user wants a fast, high-level code review of their current working tree changes before committing.
+name: reviewing-changes
+description: Quick review of uncommitted changes (staged and unstaged) focusing on bugs and logic mistakes. Use when a user wants a fast, high-level code review of their current working tree changes before committing.
 ---
 
-# Quick Review
-
-## Overview
-
-Perform a quick, high-level review of all uncommitted changes in the working tree, focusing on bugs, logic mistakes, and obvious issues.
+# Reviewing Changes
 
 ## Workflow
 
