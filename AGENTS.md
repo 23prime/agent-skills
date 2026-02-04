@@ -46,8 +46,8 @@ Skills use progressive disclosure: metadata → SKILL.md body → bundled resour
 
 ## Skill Workflow
 
-- **Create**: `uv run python skills/skill-creator/scripts/init_skill.py <skill-name> --path <output-dir>`
-- **Validate**: `uv run python skills/skill-creator/scripts/quick_validate.py <path/to/skill-folder>`
+- **Create**: `uv run python skills/creating-skills/scripts/init_skill.py <skill-name> --path <output-dir>`
+- **Validate**: `uv run python skills/creating-skills/scripts/quick_validate.py <path/to/skill-folder>`
 
 ## Validation Rules
 

@@ -20,7 +20,7 @@ description: "Translate a skill's SKILL.md into Japanese and output it as SKILL.
 
 ## ワークフロー
 
-1. ユーザーから翻訳対象のスキルパスを受け取る（例: `skills/skill-creator`）
+1. ユーザーから翻訳対象のスキルパスを受け取る（例: `skills/creating-skills`）
 2. 対象の SKILL.md を読み込む
 3. 以下の翻訳ルールに従って翻訳する
 4. 同ディレクトリに `SKILL.ja.md` として書き出す
