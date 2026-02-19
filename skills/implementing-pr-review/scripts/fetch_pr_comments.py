@@ -148,7 +148,7 @@ def fetch_pr_comments(repo: str, number: str) -> dict:
     resolved_ids = fetch_resolved_thread_ids(owner, repo_name, int(number))
 
     # Inline review comments (includes both top-level and replies)
-    raw_review = run_gh(["api", f"repos/{repo}/pulls/{number}/comments", "--paginate"])
+    raw_review = run_gh(["api", f"repos/{repo}/pulls/{number}/comments", "--paginate", "--slurp"])
 
     # Separate top-level comments from replies
     top_level: dict[int, dict] = {}
@@ -183,7 +183,7 @@ def fetch_pr_comments(repo: str, number: str) -> dict:
     ]
 
     # General PR issue comments (timeline comments, not inline)
-    raw_issue = run_gh(["api", f"repos/{repo}/issues/{number}/comments", "--paginate"])
+    raw_issue = run_gh(["api", f"repos/{repo}/issues/{number}/comments", "--paginate", "--slurp"])
     issue_comments = [
         {
             "id": c["id"],
