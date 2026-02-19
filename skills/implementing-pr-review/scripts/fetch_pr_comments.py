@@ -117,6 +117,10 @@ query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
             check=True,
         )
         result = json.loads(raw.stdout)
+        if "errors" in result:
+            msgs = "; ".join(e.get("message", str(e)) for e in result["errors"])
+            print(f"GraphQL error: {msgs}", file=sys.stderr)
+            sys.exit(1)
         threads = (
             result["data"]["repository"]["pullRequest"]["reviewThreads"]
         )
