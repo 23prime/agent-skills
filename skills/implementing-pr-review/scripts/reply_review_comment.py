@@ -32,6 +32,9 @@ def main() -> None:
         check=True,
     )
     pr_number = meta.stdout.strip().rstrip("/").split("/")[-1]
+    if not pr_number or not pr_number.isdigit():
+        print(f"Error: Could not determine PR number from comment {comment_id}", file=sys.stderr)
+        sys.exit(1)
 
     result = subprocess.run(
         [
