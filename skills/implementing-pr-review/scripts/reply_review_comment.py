@@ -38,7 +38,7 @@ def main() -> None:
             "gh", "api",
             f"repos/{repo}/pulls/{pr_number}/comments/{comment_id}/replies",
             "--method", "POST",
-            "--field", f"body={message}",
+            "--raw-field", f"body={message}",
         ],
         capture_output=True,
         text=True,
