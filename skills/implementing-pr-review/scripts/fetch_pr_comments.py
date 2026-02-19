@@ -136,6 +136,9 @@ query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
 
 def fetch_pr_comments(repo: str, number: str) -> dict:
     """Fetch PR metadata and all comments."""
+    if "/" not in repo:
+        print(f"Invalid repository format: {repo!r}. Expected <OWNER/REPO>.", file=sys.stderr)
+        sys.exit(1)
     owner, repo_name = repo.split("/", 1)
 
     # PR metadata
