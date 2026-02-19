@@ -30,7 +30,7 @@ The script outputs JSON with three sections:
 
 ### Step 2 — Skip already-handled comments
 
-Before evaluating content, skip any comment that meets either condition:
+Before evaluating content, skip any comment that meets any of these conditions:
 
 - **Resolved** (`resolved: true`) — the thread has been marked resolved on GitHub
 - **Has replies** (`replies` array is non-empty) — someone has already responded,
