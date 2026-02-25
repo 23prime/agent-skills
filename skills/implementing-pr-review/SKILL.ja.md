@@ -15,33 +15,38 @@ translated_from: SKILL.md
 
 ### Step 1 — PR コメントの取得
 
-PR の URL または `OWNER/REPO PR_NUMBER` 形式でスクリプトを実行する:
+PR の URL または引数から `OWNER/REPO` と `PR_NUMBER` をパースし、以下を実行する:
 
 ```bash
-uv run python fetch_pr_comments.py <PR_URL>
-# または
-uv run python fetch_pr_comments.py owner/repo 42
+gh pr-review review view <PR_NUMBER> -R <OWNER/REPO>
 ```
 
-スクリプトは以下の 3 つのセクションを含む JSON を出力する:
+`reviews` 配列を含む JSON オブジェクトが出力される。
+`reviews[].comments[]` を展開してすべてのインラインレビューコメントを取得する。
+各コメントには以下のフィールドが含まれる:
 
-- `pr` — タイトル、URL、本文
-- `review_comments` — インラインコードコメント（ファイル + 行番号 + diff hunk）
-- `issue_comments` — 一般的なディスカッションコメント
+- `thread_id` — GraphQL スレッドノード ID（`PRRT_...` 形式）。返信時に使用
+- `path`・`line` — インラインコメントのファイルと行番号
+- `author_login` — レビュアーの GitHub ログイン名
+- `body` — コメント本文
+- `is_resolved` — GitHub 上でスレッドが resolved 済みの場合 `true`
+- `is_outdated` — diff が変わりコメントの参照先が失効した場合 `true`
+- `thread_comments` — スレッド内にすでに投稿された返信の配列
 
 ### Step 2 — 対応済みコメントのスキップ
 
 内容を評価する前に、以下のいずれかに該当するコメントはスキップする:
 
-- **Resolved**（`resolved: true`）— GitHub 上でスレッドが resolved 済み
-- **返信がある**（`replies` 配列が空でない）— 返信の内容に関わらず、すでに誰かが対応済みとして扱う
-- **Outdated**（`outdated: true`）— diff が変わりコメントの参照先が失効しているため対応不要
+- **Resolved**（`is_resolved: true`）— GitHub 上でスレッドが resolved 済み
+- **Outdated**（`is_outdated: true`）— diff が変わりコメントの参照先が失効
+- **返信がある**（`thread_comments` 配列が空でない）— すでに誰かが対応済み
 
 対応済みとしてスキップしたコメントは最終サマリーに記録するが、返信はしない。
 
 ### Step 3 — 残りのコメントの評価とグルーピング
 
-残ったコメントごとに、参照先のファイルと周辺のコンテキストを読み込み、以下を判断する:
+残ったコメントごとに、`path`:`line` で指定されたファイルと周辺のコンテキストを
+読み込み、以下を判断する:
 
 **以下をすべて満たす場合に適用する:**
 
@@ -110,16 +115,8 @@ uv run python fetch_pr_comments.py owner/repo 42
    このコミットに属するすべての PR コメントに返信する:
 
    ```bash
-   uv run python reply_review_comment.py \
-     <owner/repo> <comment_id> "fixed by <commit_hash>"
-   ```
-
-   `issue_comments` は GitHub API がスレッド返信をサポートしないため、
-   元のコメントを引用した新規 PR コメントを投稿する:
-
-   ```bash
-   uv run python post_pr_comment.py \
-     <owner/repo> <pr_number> "> @<author>: <original comment body>\n\nfixed by <commit_hash>"
+   gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \
+     --thread-id <thread_id> --body "fixed by <commit_hash>"
    ```
 
 適用 → コミット → プッシュ → 返信 のループを、独立したコメント（またはグループ）ごとに
@@ -128,15 +125,8 @@ uv run python fetch_pr_comments.py owner/repo 42
 **スキップ**したコメントに対しては、直ちに理由を返信する:
 
 ```bash
-uv run python reply_review_comment.py \
-  <owner/repo> <comment_id> "No change: <one-sentence reason>"
-```
-
-`issue_comments` の場合は元のコメントを引用した新規 PR コメントを投稿する:
-
-```bash
-uv run python post_pr_comment.py \
-  <owner/repo> <pr_number> "> @<author>: <original comment body>\n\nNo change: <one-sentence reason>"
+gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \
+  --thread-id <thread_id> --body "No change: <one-sentence reason>"
 ```
 
 ### Step 6 — サマリーの報告
@@ -150,10 +140,11 @@ uv run python post_pr_comment.py \
 
 ## 備考
 
-- `review_comments`（インライン）には `diff_hunk`、`path`、`line` が含まれ、
-  ファイル内の正確な位置の特定に使用する
-- `issue_comments` は一般的なディスカッションのため、明確で実行可能なコード・
-  ドキュメントの変更を求める内容のみ対応する
-- `gh` CLI（`gh auth login`）と `uv` が必要
+- `path` と `line` でファイルの正確な位置を特定し、ファイルを直接読み込んで
+  周辺のコンテキストを確認する（`diff_hunk` は提供されない）
+- `gh pr-review review view` はインラインレビュースレッドのみを返す。
+  PR 全体へのディスカッションコメントは含まれない
+- `gh` CLI（`gh auth login`）と `gh-pr-review` 拡張
+  （`gh extension install agynio/gh-pr-review`）が必要
 - 開始前に作業ブランチがリモートにプッシュ済みであることを確認する
   （プッシュしたコミットが PR 上で可視になるため）

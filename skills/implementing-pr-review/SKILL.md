@@ -14,35 +14,37 @@ always evaluate before changing code.
 
 ### Step 1 — Fetch PR comments
 
-Run the bundled `fetch_pr_comments.py` script with the PR URL or `OWNER/REPO PR_NUMBER`:
+Parse `OWNER/REPO` and `PR_NUMBER` from the PR URL or arguments, then run:
 
 ```bash
-uv run python fetch_pr_comments.py <PR_URL>
-# or
-uv run python fetch_pr_comments.py owner/repo 42
+gh pr-review review view <PR_NUMBER> -R <OWNER/REPO>
 ```
 
-The script outputs JSON with three sections:
+This outputs a JSON object with a `reviews` array. Flatten all inline review
+comments by iterating `reviews[].comments[]`. Each comment has these fields:
 
-- `pr` — title, URL, body
-- `review_comments` — inline code comments (file + line + diff hunk)
-- `issue_comments` — general discussion comments
+- `thread_id` — GraphQL thread node ID (`PRRT_...`), used when replying
+- `path`, `line` — file and line number of the inline comment
+- `author_login` — reviewer's GitHub login
+- `body` — comment text
+- `is_resolved` — `true` when the thread has been resolved on GitHub
+- `is_outdated` — `true` when the diff has moved past this comment
+- `thread_comments` — array of replies already posted in this thread
 
 ### Step 2 — Skip already-handled comments
 
 Before evaluating content, skip any comment that meets any of these conditions:
 
-- **Resolved** (`resolved: true`) — the thread has been marked resolved on GitHub
-- **Has replies** (`replies` array is non-empty) — someone has already responded,
-  treating it as handled regardless of reply content
-- **Outdated** (`outdated: true`) — the diff has moved past this comment; the
-  code it referenced no longer exists at that position
+- **Resolved** (`is_resolved: true`) — thread marked resolved on GitHub
+- **Outdated** (`is_outdated: true`) — the diff has moved past this comment
+- **Has replies** (`thread_comments` array is non-empty) — already responded to
 
 Log skipped-as-handled comments in the final summary but do not reply to them.
 
 ### Step 3 — Evaluate and group remaining comments
 
-For every remaining comment, read the referenced file and surrounding context, then:
+For every remaining comment, read the referenced file at `path`:`line` and
+surrounding context, then:
 
 **Accept if ALL of the following are true:**
 
@@ -113,16 +115,8 @@ For each accepted comment or group:
    hash obtained from `git rev-parse HEAD`:
 
    ```bash
-   uv run python reply_review_comment.py \
-     <owner/repo> <comment_id> "fixed by <commit_hash>"
-   ```
-
-   For `issue_comments`, the GitHub API has no threaded-reply endpoint.
-   Post a new PR comment that quotes the original instead:
-
-   ```bash
-   uv run python post_pr_comment.py \
-     <owner/repo> <pr_number> "> @<author>: <original comment body>\n\nfixed by <commit_hash>"
+   gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \
+     --thread-id <thread_id> --body "fixed by <commit_hash>"
    ```
 
 Repeat this loop — apply → commit → push → reply — for each independent
@@ -131,15 +125,8 @@ comment or group before moving to the next.
 For each **skipped** comment, reply immediately with the reason:
 
 ```bash
-uv run python reply_review_comment.py \
-  <owner/repo> <comment_id> "No change: <one-sentence reason>"
-```
-
-For `issue_comments`, post a new PR comment quoting the original:
-
-```bash
-uv run python post_pr_comment.py \
-  <owner/repo> <pr_number> "> @<author>: <original comment body>\n\nNo change: <one-sentence reason>"
+gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \
+  --thread-id <thread_id> --body "No change: <one-sentence reason>"
 ```
 
 ### Step 6 — Report summary
@@ -153,10 +140,11 @@ After all comments are processed, output one line per comment:
 
 ## Notes
 
-- `review_comments` (inline) include `diff_hunk`, `path`, and `line` for
-  locating the exact location in the file
-- `issue_comments` are general discussion; only act on them if they contain a
-  clear, actionable code/doc change request
-- Requires `gh` CLI (`gh auth login`) and `uv`
+- `path` and `line` identify the exact location; read the file directly for
+  surrounding context (no `diff_hunk` is provided)
+- `gh pr-review review view` returns only inline review thread comments;
+  PR-level discussion comments are not included
+- Requires `gh` CLI (`gh auth login`) and the `gh-pr-review` extension
+  (`gh extension install agynio/gh-pr-review`)
 - Ensure the working branch is pushed to a remote before starting so that
   pushed commits are visible in the PR
