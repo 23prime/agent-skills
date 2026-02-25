@@ -15,7 +15,21 @@ translated_from: SKILL.md
 
 ### Step 1 — PR コメントの取得
 
-PR の URL または引数から `OWNER/REPO` と `PR_NUMBER` をパースし、以下を実行する:
+`OWNER/REPO` と `PR_NUMBER` を以下の優先順位で決定する:
+
+- **PR の URL が与えられた場合** — URL から `OWNER/REPO` と `PR_NUMBER` をパースする。
+- **`OWNER/REPO` と `PR_NUMBER` が明示された場合** — そのまま使用する。
+- **それ以外** — カレントディレクトリから自動検出する:
+
+  ```bash
+  gh repo view --json nameWithOwner --jq .nameWithOwner  # OWNER/REPO
+  gh pr view --json number --jq .number                  # PR_NUMBER
+  ```
+
+  `gh pr view` が失敗した場合（カレントブランチに対応する PR が見つからない）は、
+  PR の URL または番号をユーザーに確認する。
+
+その後、以下を実行する:
 
 ```bash
 gh pr-review review view <PR_NUMBER> -R <OWNER/REPO>

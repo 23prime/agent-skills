@@ -6,6 +6,8 @@
       "Bash(git status:*)",
       "Bash(git ls-files:*)",
       "Bash(git log:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh pr view:*)",
       "Bash(gh pr-review:*)",
       "Bash(mise run check-md:*)",
       "Bash(mise check-md:*)",

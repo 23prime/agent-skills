@@ -14,7 +14,20 @@ always evaluate before changing code.
 
 ### Step 1 — Fetch PR comments
 
-Parse `OWNER/REPO` and `PR_NUMBER` from the PR URL or arguments, then run:
+Determine `OWNER/REPO` and `PR_NUMBER` as follows:
+
+- **If a PR URL is given** — parse `OWNER/REPO` and `PR_NUMBER` from the URL.
+- **If `OWNER/REPO` and `PR_NUMBER` are given explicitly** — use them as-is.
+- **Otherwise** — detect automatically from the current working directory:
+
+  ```bash
+  gh repo view --json nameWithOwner --jq .nameWithOwner  # OWNER/REPO
+  gh pr view --json number --jq .number                  # PR_NUMBER
+  ```
+
+  If `gh pr view` fails (no PR found for the current branch), ask the user to provide the PR URL or number.
+
+Then run:
 
 ```bash
 gh pr-review review view <PR_NUMBER> -R <OWNER/REPO>
