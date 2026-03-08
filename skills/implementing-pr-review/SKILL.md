@@ -173,29 +173,18 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 ```
 
 - **`APPROVED`** — The PR is approved. Stop and report success.
-- **Otherwise** — Poll every 5 minutes for up to 2 hours (24 attempts).
-  Stop with a timeout message if the limit is reached:
+- **Otherwise** — Run the bundled polling script:
 
   ```bash
-  for i in $(seq 1 24); do
-    sleep 300
-    DECISION=$(gh pr view <PR_NUMBER> -R <OWNER/REPO> \
-      --json reviewDecision --jq .reviewDecision)
-    [ "$DECISION" = "APPROVED" ] && { echo "PR approved!"; exit 0; }
-    NEW=$(gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> \
-      | jq '[.reviews[]?.comments[]?
-             | select(.is_resolved == false
-                      and .is_outdated == false
-                      and (.thread_comments | length) == 0)]
-            | length')
-    [ "$NEW" -gt 0 ] && { echo "Found $NEW new comment(s), restarting."; break; }
-  done
-  echo "Timed out after 24 hours without approval."
+  scripts/poll_until_approved.sh <PR_NUMBER> <OWNER/REPO>
   ```
 
-  When new unresolved comments are found, restart the entire workflow from
-  Step 1. When the PR is approved, stop. If the loop exits without approval
-  or new comments, report the timeout to the user.
+  The script polls every 5 minutes for up to 4 hours. On timeout, it posts
+  a single `` `@coderabbitai` resolve `` comment before exiting. Exit codes:
+
+  - `0` — PR approved
+  - `1` — Timed out after 4 hours; report to the user
+  - `2` — New unresolved comments found; restart from Step 1
 
 ## Notes
 
