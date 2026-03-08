@@ -151,6 +151,13 @@ After all comments are processed, output one line per comment:
 - Skipped (no change): `docs/api.md:7` — Suggestion uses a removed API (`v1/endpoint`)
 - Already handled: `src/baz.py:5` — Has existing replies (not touched)
 
+### Step 7 — Resolve GitHub Copilot review threads
+
+After the summary, invoke the `resolving-pr-conversations` skill for the same
+PR, targeting GitHub Copilot only (scope `[1]`). Pass the already-known
+`OWNER/REPO` and `PR_NUMBER` so the skill skips PR detection. Skip the scope
+prompt by defaulting to `[1]`.
+
 ## Notes
 
 - `path` and `line` identify the exact location; read the file directly for

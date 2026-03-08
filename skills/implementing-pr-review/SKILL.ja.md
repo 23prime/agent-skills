@@ -152,6 +152,12 @@ gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \
 - Skipped (no change): `docs/api.md:7` — 削除済みの API (`v1/endpoint`) を使用する提案
 - Already handled: `src/baz.py:5` — 既存の返信あり（対応不要）
 
+### Step 7 — GitHub Copilot のレビュースレッドを resolve する
+
+サマリー出力後、同じ PR を対象に `resolving-pr-conversations` スキルを呼び出す。
+対象は GitHub Copilot のみ（スコープ `[1]`）とする。すでに判明している `OWNER/REPO` と
+`PR_NUMBER` を渡すことで PR の検出をスキップし、スコープ選択もデフォルトの `[1]` で進める。
+
 ## 備考
 
 - `path` と `line` でファイルの正確な位置を特定し、ファイルを直接読み込んで
