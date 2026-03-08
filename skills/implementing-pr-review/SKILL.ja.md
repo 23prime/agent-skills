@@ -1,6 +1,6 @@
 ---
 name: implementing-pr-review
-description: "GitHub Pull Request のレビューコメントを取得し、各コメントの正確性とベストプラクティスへの適合性を批判的に評価する。妥当な提案のみをソースコードまたはドキュメントに反映する。ユーザーが PR の URL を提示してレビューフィードバックを適用・実装するよう求めた際に使用する。"
+description: "GitHub Pull Request のレビューコメントを取得し、各コメントの正確性とベストプラクティスへの適合性を批判的に評価する。妥当な提案のみをソースコードまたはドキュメントに反映する。修正適用後は PR が承認されるまでポーリングを続け、新しいコメントが来るたびにレビューサイクルを再開する。ユーザーが PR の URL を提示してレビューフィードバックを適用・実装するよう求めた場合、または承認されるまで繰り返し対応したい場合に使用する。"
 translated_from: SKILL.md
 ---
 
@@ -35,8 +35,13 @@ translated_from: SKILL.md
 gh pr-review review view <PR_NUMBER> -R <OWNER/REPO>
 ```
 
-`reviews` 配列を含む JSON オブジェクトが出力される。
-`reviews[].comments[]` を展開してすべてのインラインレビューコメントを取得する。
+`reviews` 配列を含む JSON オブジェクトが出力される。すべてのインラインレビューコメントを
+展開するには以下を使う:
+
+```bash
+gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> | jq '[.reviews[]?.comments[]?]'
+```
+
 各コメントには以下のフィールドが含まれる:
 
 - `thread_id` — GraphQL スレッドノード ID（`PRRT_...` 形式）。返信時に使用
@@ -157,6 +162,38 @@ gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \
 サマリー出力後、同じ PR を対象に `resolving-pr-conversations` スキルを呼び出す。
 対象は GitHub Copilot のみ（スコープ `[1]`）とする。すでに判明している `OWNER/REPO` と
 `PR_NUMBER` を渡すことで PR の検出をスキップし、スコープ選択もデフォルトの `[1]` で進める。
+
+### Step 8 — 承認チェックとループ
+
+スレッドの resolve 後、PR の承認状況を確認する:
+
+```bash
+gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
+```
+
+- **`APPROVED`** — PR が承認済み。成功を報告して終了する。
+- **それ以外** — 5 分ごとに最大 2 時間（24 回）ポーリングする。
+  上限に達した場合はタイムアウトメッセージを出力して終了する:
+
+  ```bash
+  for i in $(seq 1 24); do
+    sleep 300
+    DECISION=$(gh pr view <PR_NUMBER> -R <OWNER/REPO> \
+      --json reviewDecision --jq .reviewDecision)
+    [ "$DECISION" = "APPROVED" ] && { echo "PR approved!"; exit 0; }
+    NEW=$(gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> \
+      | jq '[.reviews[]?.comments[]?
+             | select(.is_resolved == false
+                      and .is_outdated == false
+                      and (.thread_comments | length) == 0)]
+            | length')
+    [ "$NEW" -gt 0 ] && { echo "Found $NEW new comment(s), restarting."; break; }
+  done
+  echo "Timed out after 24 hours without approval."
+  ```
+
+  新しい未解決コメントが見つかった場合は Step 1 からワークフロー全体を再開する。
+  PR が承認された場合は終了する。上限到達で終了した場合はユーザーにタイムアウトを報告する。
 
 ## 備考
 

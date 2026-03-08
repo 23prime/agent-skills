@@ -1,6 +1,6 @@
 ---
 name: implementing-pr-review
-description: "Fetches review comments from a GitHub Pull Request, critically evaluates each comment for correctness and best-practice alignment, then applies only valid suggestions to source code or documentation. Use when a user provides a PR URL and asks to apply, act on, or implement the review feedback."
+description: "Fetches review comments from a GitHub Pull Request, critically evaluates each comment for correctness and best-practice alignment, then applies only valid suggestions to source code or documentation. After applying fixes, polls until the PR is approved, restarting the review cycle whenever new comments appear. Use when a user provides a PR URL and asks to apply, act on, or implement the review feedback, or wants to iterate until the PR is approved."
 ---
 
 # Implementing PR Review
@@ -34,7 +34,13 @@ gh pr-review review view <PR_NUMBER> -R <OWNER/REPO>
 ```
 
 This outputs a JSON object with a `reviews` array. Flatten all inline review
-comments by iterating `reviews[].comments[]`. Each comment has these fields:
+comments with:
+
+```bash
+gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> | jq '[.reviews[]?.comments[]?]'
+```
+
+Each comment has these fields:
 
 - `thread_id` — GraphQL thread node ID (`PRRT_...`), used when replying
 - `path`, `line` — file and line number of the inline comment
@@ -157,6 +163,39 @@ After the summary, invoke the `resolving-pr-conversations` skill for the same
 PR, targeting GitHub Copilot only (scope `[1]`). Pass the already-known
 `OWNER/REPO` and `PR_NUMBER` so the skill skips PR detection. Skip the scope
 prompt by defaulting to `[1]`.
+
+### Step 8 — Check approval and loop
+
+After resolving conversations, check the PR's review decision:
+
+```bash
+gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
+```
+
+- **`APPROVED`** — The PR is approved. Stop and report success.
+- **Otherwise** — Poll every 5 minutes for up to 2 hours (24 attempts).
+  Stop with a timeout message if the limit is reached:
+
+  ```bash
+  for i in $(seq 1 24); do
+    sleep 300
+    DECISION=$(gh pr view <PR_NUMBER> -R <OWNER/REPO> \
+      --json reviewDecision --jq .reviewDecision)
+    [ "$DECISION" = "APPROVED" ] && { echo "PR approved!"; exit 0; }
+    NEW=$(gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> \
+      | jq '[.reviews[]?.comments[]?
+             | select(.is_resolved == false
+                      and .is_outdated == false
+                      and (.thread_comments | length) == 0)]
+            | length')
+    [ "$NEW" -gt 0 ] && { echo "Found $NEW new comment(s), restarting."; break; }
+  done
+  echo "Timed out after 24 hours without approval."
+  ```
+
+  When new unresolved comments are found, restart the entire workflow from
+  Step 1. When the PR is approved, stop. If the loop exits without approval
+  or new comments, report the timeout to the user.
 
 ## Notes
 
