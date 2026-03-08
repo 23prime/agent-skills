@@ -172,11 +172,11 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 ```
 
 - **`APPROVED`** — PR が承認済み。成功を報告して終了する。
-- **それ以外** — 5 分ごとに最大 2 時間（24 回）ポーリングする。
+- **それ以外** — 5 分ごとに最大 4 時間（48 回）ポーリングする。
   上限に達した場合はタイムアウトメッセージを出力して終了する:
 
   ```bash
-  for i in $(seq 1 24); do
+  for i in $(seq 1 48); do
     sleep 300
     DECISION=$(gh pr view <PR_NUMBER> -R <OWNER/REPO> \
       --json reviewDecision --jq .reviewDecision)
@@ -188,8 +188,12 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
                       and (.thread_comments | length) == 0)]
             | length')
     [ "$NEW" -gt 0 ] && { echo "Found $NEW new comment(s), restarting."; break; }
+    if [ $((i % 3)) -eq 0 ]; then
+      gh pr comment <PR_NUMBER> -R <OWNER/REPO> \
+        --body "@coderabbitai resolve conversations and approve"
+    fi
   done
-  echo "Timed out after 24 hours without approval."
+  echo "Timed out after 4 hours without approval."
   ```
 
   新しい未解決コメントが見つかった場合は Step 1 からワークフロー全体を再開する。
