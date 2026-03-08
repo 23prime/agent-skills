@@ -182,9 +182,20 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   The script polls every 5 minutes for up to 4 hours. On timeout, it posts
   a single `` `@coderabbitai` resolve `` comment before exiting. Exit codes:
 
-  - `0` — PR approved
-  - `1` — Timed out after 4 hours; report to the user
+  - `0` — PR approved; proceed to Step 9
+  - `1` — Timed out after 4 hours; report to the user and stop
   - `2` — New unresolved comments found; restart from Step 1
+
+### Step 9 — Clean up topic branch
+
+After the PR is approved, clean up the topic branch locally and remotely:
+
+```bash
+scripts/clean_topic_branch.sh
+```
+
+The script switches to the default branch, pulls the latest changes, and
+deletes the topic branch both locally and from the remote.
 
 ## Notes
 
