@@ -179,9 +179,8 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   scripts/poll_until_approved.sh <PR_NUMBER> <OWNER/REPO>
   ```
 
-  The script polls every 5 minutes for up to 4 hours, posting a comment
-  asking `@coderabbitai` to resolve conversations and approve every 15
-  minutes. Exit codes:
+  The script polls every 5 minutes for up to 4 hours. On timeout, it posts
+  a single `` `@coderabbitai` resolve `` comment before exiting. Exit codes:
 
   - `0` — PR approved
   - `1` — Timed out after 4 hours; report to the user

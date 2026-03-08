@@ -9,9 +9,7 @@ REPO="${2:?OWNER/REPO required}"
 
 readonly POLL_INTERVAL_SEC=300                                        # 5 minutes
 readonly TIMEOUT_HOURS=4
-readonly MENTION_INTERVAL_MIN=15
 readonly MAX_ATTEMPTS=$(( TIMEOUT_HOURS * 60 * 60 / POLL_INTERVAL_SEC ))
-readonly MENTION_EVERY=$(( MENTION_INTERVAL_MIN * 60 / POLL_INTERVAL_SEC ))
 
 for i in $(seq 1 "$MAX_ATTEMPTS"); do
   sleep "$POLL_INTERVAL_SEC"
@@ -27,12 +25,8 @@ for i in $(seq 1 "$MAX_ATTEMPTS"); do
                     and (.thread_comments | length) == 0)]
           | length')
   [ "$NEW" -gt 0 ] && { echo "Found $NEW new comment(s), restarting."; exit 2; }
-
-  if [ $((i % MENTION_EVERY)) -eq 0 ]; then
-    gh pr comment "$PR_NUMBER" -R "$REPO" \
-      --body "@coderabbitai resolve conversations and approve"
-  fi
 done
 
+gh pr comment "$PR_NUMBER" -R "$REPO" --body "\`@coderabbitai\` resolve"
 echo "Timed out after ${TIMEOUT_HOURS} hours without approval."
 exit 1

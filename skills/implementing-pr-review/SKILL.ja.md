@@ -178,8 +178,8 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   scripts/poll_until_approved.sh <PR_NUMBER> <OWNER/REPO>
   ```
 
-  スクリプトは 5 分ごとに最大 4 時間ポーリングし、15 分ごとに
-  `@coderabbitai` へ resolve と承認を依頼するコメントを投稿する。
+  スクリプトは 5 分ごとに最大 4 時間ポーリングする。タイムアウト時に
+  `` `@coderabbitai` resolve `` コメントを1回投稿して終了する。
   終了コード:
 
   - `0` — PR が承認された
