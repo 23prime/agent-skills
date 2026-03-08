@@ -172,32 +172,19 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 ```
 
 - **`APPROVED`** — PR が承認済み。成功を報告して終了する。
-- **それ以外** — 5 分ごとに最大 4 時間（48 回）ポーリングする。
-  上限に達した場合はタイムアウトメッセージを出力して終了する:
+- **それ以外** — バンドルされたポーリングスクリプトを実行する:
 
   ```bash
-  for i in $(seq 1 48); do
-    sleep 300
-    DECISION=$(gh pr view <PR_NUMBER> -R <OWNER/REPO> \
-      --json reviewDecision --jq .reviewDecision)
-    [ "$DECISION" = "APPROVED" ] && { echo "PR approved!"; exit 0; }
-    NEW=$(gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> \
-      | jq '[.reviews[]?.comments[]?
-             | select(.is_resolved == false
-                      and .is_outdated == false
-                      and (.thread_comments | length) == 0)]
-            | length')
-    [ "$NEW" -gt 0 ] && { echo "Found $NEW new comment(s), restarting."; break; }
-    if [ $((i % 3)) -eq 0 ]; then
-      gh pr comment <PR_NUMBER> -R <OWNER/REPO> \
-        --body "@coderabbitai resolve conversations and approve"
-    fi
-  done
-  echo "Timed out after 4 hours without approval."
+  scripts/poll_until_approved.sh <PR_NUMBER> <OWNER/REPO>
   ```
 
-  新しい未解決コメントが見つかった場合は Step 1 からワークフロー全体を再開する。
-  PR が承認された場合は終了する。上限到達で終了した場合はユーザーにタイムアウトを報告する。
+  スクリプトは 5 分ごとに最大 4 時間ポーリングし、15 分ごとに
+  `@coderabbitai` へ resolve と承認を依頼するコメントを投稿する。
+  終了コード:
+
+  - `0` — PR が承認された
+  - `1` — 4 時間でタイムアウト。ユーザーに報告する
+  - `2` — 新しい未解決コメントを検出。Step 1 から再開する
 
 ## 備考
 
