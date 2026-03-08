@@ -171,7 +171,7 @@ gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \
 gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
 ```
 
-- **`APPROVED`** — PR が承認済み。成功を報告して終了する。
+- **`APPROVED`** — PR が承認済み。Step 9 に進む。
 - **それ以外** — バンドルされたポーリングスクリプトを実行する:
 
   ```bash
@@ -186,9 +186,31 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   - `1` — 4 時間でタイムアウト。ユーザーに報告して終了する
   - `2` — 新しい未解決コメントを検出。Step 1 から再開する
 
-### Step 9 — トピックブランチのクリーンアップ
+### Step 9 — PR をマージする
 
-PR が承認されたら、トピックブランチをローカルとリモートから削除する:
+PR が承認されたら、必須チェックがすべてパスするのを待つ:
+
+```bash
+gh pr checks <PR_NUMBER> -R <OWNER/REPO> --watch
+```
+
+チェックが失敗した場合はユーザーに報告して終了する。
+
+チェックがパスしたら、マージ前にユーザーへ確認する:
+
+```text
+All checks passed. Merge PR #<PR_NUMBER>? [y/N]
+```
+
+承認された場合にマージを実行する:
+
+```bash
+gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
+```
+
+### Step 10 — トピックブランチのクリーンアップ
+
+マージ後、トピックブランチをローカルとリモートから削除する:
 
 ```bash
 scripts/clean_topic_branch.sh

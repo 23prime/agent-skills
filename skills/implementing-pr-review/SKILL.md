@@ -172,7 +172,7 @@ After resolving conversations, check the PR's review decision:
 gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
 ```
 
-- **`APPROVED`** — The PR is approved. Stop and report success.
+- **`APPROVED`** — The PR is approved. Proceed to Step 9.
 - **Otherwise** — Run the bundled polling script:
 
   ```bash
@@ -186,9 +186,31 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   - `1` — Timed out after 4 hours; report to the user and stop
   - `2` — New unresolved comments found; restart from Step 1
 
-### Step 9 — Clean up topic branch
+### Step 9 — Merge the PR
 
-After the PR is approved, clean up the topic branch locally and remotely:
+After the PR is approved, wait for all required checks to pass:
+
+```bash
+gh pr checks <PR_NUMBER> -R <OWNER/REPO> --watch
+```
+
+If checks fail, report to the user and stop.
+
+If checks pass, ask the user for confirmation before merging:
+
+```text
+All checks passed. Merge PR #<PR_NUMBER>? [y/N]
+```
+
+On confirmation, run:
+
+```bash
+gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
+```
+
+### Step 10 — Clean up topic branch
+
+After merging, clean up the topic branch locally and remotely:
 
 ```bash
 scripts/clean_topic_branch.sh
