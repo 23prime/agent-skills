@@ -29,10 +29,11 @@ translated_from: SKILL.md
 ### Step 2 — 全レビュースレッドを取得する
 
 ```bash
-gh pr-review review view <PR_NUMBER> -R <OWNER/REPO>
+gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> \
+  | jq '[.reviews[].comments[] | {thread_id, path, line, author_login, body, is_resolved, is_outdated, thread_comments}]'
 ```
 
-`reviews[].comments[]` を展開して全スレッドをフラット化する。各コメントは以下のフィールドを持つ:
+これにより全レビューのスレッドを単一の配列にフラット化する。各要素は以下のフィールドを持つ:
 
 - `thread_id` — GraphQL ノード ID（`PRRT_…`）、resolve 時に必要
 - `path`, `line` — インラインコメントのファイルと行番号
@@ -42,34 +43,9 @@ gh pr-review review view <PR_NUMBER> -R <OWNER/REPO>
 - `is_outdated` — diff がこのコメントを追い越した場合 `true`
 - `thread_comments` — スレッド内の返信配列
 
-取得後、未 resolve スレッドをレビュアーごとにグループ化して一覧表示する:
+### Step 3 — 全スレッドを分類する
 
-```text
-未 resolve スレッド一覧:
-
-copilot-pull-request-reviewer (1 件):
-  - src/main.rs:73 — "`--json` フラグが親コマンドとサブコマンドで重複している"
-
-coderabbitai (2 件):
-  - src/cmd/space.rs:175 — "project が None の場合のフォールバックをテストで明示することを検討"
-  - .cspell/dicts/project.txt:15 — "タイポ: emptively → preemptively"
-```
-
-### Step 3 — レビュアーの対象範囲を確認する
-
-一覧を表示した後、ユーザーに確認する:
-
-```text
-対象レビュアー: [1] GitHub Copilot のみ（デフォルト） / [2] 全員
-```
-
-ユーザーが 1 を選択した場合、または何も入力せず Enter を押した場合は、`author_login` が
-`copilot-pull-request-reviewer[bot]` のスレッドのみを処理し、それ以外は無視する。
-2 を選択した場合は全レビュアーのスレッドを対象とする。
-
-### Step 4 — 各スレッドを分類する
-
-対象範囲内の各スレッドに対して、以下の判定ルールを順番に適用する:
+全スレッドに対して（レビュアー問わず）以下の判定ルールを順番に適用する:
 
 | 条件 | 分類 |
 | ---- | ---- |
@@ -81,44 +57,37 @@ coderabbitai (2 件):
 
 「明確に示す」とは、返信本文に明確な意図が含まれていることを意味する。判断に迷う場合は **ユーザーに確認** に分類する。
 
-### Step 5 — 計画を提示して確認する
+### Step 4 — サマリ・対象範囲・計画をまとめて提示し、一度に確認する
 
-操作を行う前に、分類ごとにまとめた計画を提示する:
-
-```text
-## Resolution plan
-
-**自動 resolve するもの (N スレッド):**
-- src/foo.py:42 — 返信: "fixed in abc1234"
-- src/bar.py:17 — 返信: "won't fix: intentional behaviour"
-
-**確認が必要なもの (N スレッド):**
-- docs/api.md:7 — 返信: "ok"（曖昧）
-
-**返信なし — 放置するもの (N スレッド):**
-- src/qux.py:5
-
-**resolve 済み — スキップするもの (N スレッド):**
-- src/baz.py:10
-
-実行しますか？
-```
-
-ユーザーの確認を待つ。特定のスレッドのスキップや再分類などの変更要求があれば、計画を修正して再度確認する。
-
-**ユーザーに確認** に分類されたスレッドは、元のコメントと返信を並べて表示し確認する:
+ユーザーが判断に必要な情報をすべて1つのメッセージにまとめて提示し、一度の返答を待つ:
 
 ```text
-スレッド: src/api.md:7
-  Copilot: "Consider using pathlib here."
-  返信:    "ok"
+未 resolve スレッド一覧（レビュアー別）:
 
-このスレッドを resolve しますか？ [y/n]
+copilot-pull-request-reviewer (1 件):
+  - src/main.rs:73 — "`--json` フラグが親コマンドとサブコマンドで重複している"  [返信なし]
+
+coderabbitai (2 件):
+  - src/cmd/space.rs:175 — "project が None の場合のフォールバックをテストで明示..."  [自動 resolve: "fixed in abc1234"]
+  - docs/api.md:7         — "Consider using pathlib here."                          [要確認: 返信 "ok" が曖昧]
+
+---
+対象レビュアー: [1] GitHub Copilot のみ（デフォルト） / [2] 全員
+
+曖昧なスレッドを resolve しますか？（以下）
+  - docs/api.md:7  Copilot: "Consider using pathlib here." / 返信: "ok"  [y/n]
 ```
 
-**ユーザーに確認** のスレッドは、resolve 前にまとめて一括確認し、やり取りの回数を最小限にする。
+ユーザーの返答（例: "1, y"）をまとめてパースする:
 
-### Step 6 — 承認されたスレッドを resolve する
+- 対象範囲の選択（1 または 2。省略時はデフォルトの 1）
+- **ユーザーに確認** の各スレッドに対する y/n
+
+変更要求があれば計画を修正して再提示する。
+
+パース後、選択された対象範囲でスレッドをフィルタし、**ユーザーに確認** の回答を反映して resolve 対象の最終リストを確定する。
+
+### Step 5 — 承認されたスレッドを resolve する
 
 resolve が承認された各スレッドに対して、以下を実行する:
 
@@ -128,7 +97,7 @@ gh pr-review threads resolve <PR_NUMBER> -R <OWNER/REPO> --thread-id <thread_id>
 
 コマンドがゼロ以外のステータスで終了した場合はエラーを報告し、残りのスレッドの処理を続ける。
 
-### Step 7 — 結果サマリを出力する
+### Step 6 — 結果サマリを出力する
 
 全スレッドの処理後、1 スレッドにつき 1 行で出力する:
 

@@ -28,10 +28,11 @@ Determine `OWNER/REPO` and `PR_NUMBER`:
 ### Step 2 — Fetch all review threads
 
 ```bash
-gh pr-review review view <PR_NUMBER> -R <OWNER/REPO>
+gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> \
+  | jq '[.reviews[].comments[] | {thread_id, path, line, author_login, body, is_resolved, is_outdated, thread_comments}]'
 ```
 
-Flatten every thread by iterating `reviews[].comments[]`. Each comment has:
+This flattens all threads across all reviews into a single array. Each element has:
 
 - `thread_id` — GraphQL node ID (`PRRT_…`), required for resolving
 - `path`, `line` — file and line of the inline comment
@@ -41,34 +42,9 @@ Flatten every thread by iterating `reviews[].comments[]`. Each comment has:
 - `is_outdated` — diff has moved past this comment
 - `thread_comments` — array of replies in this thread
 
-Then display a summary of unresolved threads grouped by reviewer, for example:
+### Step 3 — Classify all threads
 
-```text
-Unresolved threads:
-
-copilot-pull-request-reviewer (1):
-  - src/main.rs:73 — "`--json` flag duplication between parent and subcommand"
-
-coderabbitai (2):
-  - src/cmd/space.rs:175 — "Consider testing the project fallback explicitly."
-  - .cspell/dicts/project.txt:15 — "Typo: emptively → preemptively"
-```
-
-### Step 3 — Confirm reviewer scope
-
-After showing the summary, ask the user:
-
-```text
-Target reviewer: [1] GitHub Copilot only (default) / [2] All reviewers
-```
-
-If the user selects 1 or presses Enter without input, restrict to threads where
-`author_login` is `copilot-pull-request-reviewer[bot]` and skip all others
-silently. If the user selects 2, process threads from all reviewers.
-
-### Step 4 — Classify each thread
-
-For every thread in scope, apply the following decision rules in order:
+Apply the following decision rules to every thread (regardless of reviewer):
 
 | Condition | Classification |
 | --------- | -------------- |
@@ -81,47 +57,39 @@ For every thread in scope, apply the following decision rules in order:
 "Clearly indicates" means the reply body contains unambiguous intent. When in
 doubt, classify as **Ask user**.
 
-### Step 5 — Present plan and confirm
+### Step 4 — Present summary, confirm scope and plan in one interaction
 
-Before taking any action, show a plan grouped by classification:
-
-```text
-## Resolution plan
-
-**Will resolve automatically (N threads):**
-- src/foo.py:42 — Reply: "fixed in abc1234"
-- src/bar.py:17 — Reply: "won't fix: intentional behaviour"
-
-**Will ask you about (N threads):**
-- docs/api.md:7 — Reply: "ok" (ambiguous)
-
-**No reply — leaving untouched (N threads):**
-- src/qux.py:5
-
-**Already resolved — skipping (N threads):**
-- src/baz.py:10
-
-Proceed?
-```
-
-Wait for the user to confirm. If the user requests changes to the plan (e.g.
-skip a specific thread, reclassify something), revise and ask again.
-
-For threads classified as **Ask user**, show the original comment and reply
-side by side and ask:
+Show everything the user needs to decide in a single message, then wait for one
+reply:
 
 ```text
-Thread: src/api.md:7
-  Copilot: "Consider using pathlib here."
-  Reply:   "ok"
+Unresolved threads by reviewer:
 
-Resolve this thread? [y/n]
+copilot-pull-request-reviewer (1):
+  - src/main.rs:73 — "`--json` flag duplication between parent and subcommand"  [No reply]
+
+coderabbitai (2):
+  - src/cmd/space.rs:175 — "Consider testing the project fallback..."  [Auto-resolve: "fixed in abc1234"]
+  - docs/api.md:7         — "Consider using pathlib here."             [Ask: reply "ok" is ambiguous]
+
+---
+Target reviewer: [1] GitHub Copilot only (default) / [2] All reviewers
+
+For ambiguous threads, resolve? (listed below)
+  - docs/api.md:7  Copilot: "Consider using pathlib here." / Reply: "ok"  [y/n]
 ```
 
-Process all **Ask user** threads as a batch before resolving, to minimise
-back-and-forth.
+Wait for the user to answer all questions in one reply (e.g. "1, y"). Parse:
 
-### Step 6 — Resolve approved threads
+- Scope selection (1 or 2; default 1 if omitted)
+- y/n for each **Ask user** thread
+
+If the user requests changes to the plan, revise and re-present.
+
+After parsing, filter threads by the chosen scope and apply the **Ask user**
+answers to form the final list of threads to resolve.
+
+### Step 5 — Resolve approved threads
 
 For each thread approved for resolution, run:
 
@@ -132,7 +100,7 @@ gh pr-review threads resolve <PR_NUMBER> -R <OWNER/REPO> --thread-id <thread_id>
 If the command exits with a non-zero status, report the failure and continue
 with the remaining threads.
 
-### Step 7 — Report summary
+### Step 6 — Report summary
 
 After processing all threads, output one line per thread:
 
