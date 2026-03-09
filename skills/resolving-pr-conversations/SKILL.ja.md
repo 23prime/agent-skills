@@ -30,7 +30,7 @@ translated_from: SKILL.md
 
 ```bash
 gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> \
-  | jq '[.reviews[].comments[] | {thread_id, path, line, author_login, body, is_resolved, is_outdated, thread_comments}]'
+  | jq '[.reviews[]?.comments[]? | {thread_id, path, line, author_login, body, is_resolved, is_outdated, thread_comments}]'
 ```
 
 これにより全レビューのスレッドを単一の配列にフラット化する。各要素は以下のフィールドを持つ:

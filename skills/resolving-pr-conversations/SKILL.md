@@ -29,7 +29,7 @@ Determine `OWNER/REPO` and `PR_NUMBER`:
 
 ```bash
 gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> \
-  | jq '[.reviews[].comments[] | {thread_id, path, line, author_login, body, is_resolved, is_outdated, thread_comments}]'
+  | jq '[.reviews[]?.comments[]? | {thread_id, path, line, author_login, body, is_resolved, is_outdated, thread_comments}]'
 ```
 
 This flattens all threads across all reviews into a single array. Each element has:
