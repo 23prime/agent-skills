@@ -179,7 +179,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
   ```
 
-  The script polls every 5 minutes for up to 4 hours. On timeout, it posts
+  The script polls every 1 minute for up to 4 hours. On timeout, it posts
   a single `` `@coderabbitai` resolve `` comment before exiting. Exit codes:
 
   - `0` — PR approved; proceed to Step 9

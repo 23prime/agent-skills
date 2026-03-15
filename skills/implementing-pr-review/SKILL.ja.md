@@ -178,7 +178,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
   ```
 
-  スクリプトは 5 分ごとに最大 4 時間ポーリングする。タイムアウト時に
+  スクリプトは 1 分ごとに最大 4 時間ポーリングする。タイムアウト時に
   `` `@coderabbitai` resolve `` コメントを1回投稿して終了する。
   終了コード:
 

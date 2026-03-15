@@ -7,7 +7,7 @@ set -euo pipefail
 PR_NUMBER="${1:?PR_NUMBER required}"
 REPO="${2:?OWNER/REPO required}"
 
-readonly POLL_INTERVAL_SEC=300                                        # 5 minutes
+readonly POLL_INTERVAL_SEC=60                                         # 1 minute
 readonly TIMEOUT_HOURS=4
 readonly MAX_ATTEMPTS=$(( TIMEOUT_HOURS * 60 * 60 / POLL_INTERVAL_SEC ))
 
