@@ -175,7 +175,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 - **それ以外** — バンドルされたポーリングスクリプトを実行する:
 
   ```bash
-  scripts/poll_until_approved.sh <PR_NUMBER> <OWNER/REPO>
+  "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
   ```
 
   スクリプトは 5 分ごとに最大 4 時間ポーリングする。タイムアウト時に
@@ -213,7 +213,7 @@ gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
 マージ後、トピックブランチをローカルとリモートから削除する:
 
 ```bash
-scripts/clean_topic_branch.sh
+"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/clean_topic_branch.sh"
 ```
 
 スクリプトはデフォルトブランチに切り替え、最新の変更を pull し、

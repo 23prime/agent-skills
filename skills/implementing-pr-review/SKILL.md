@@ -176,7 +176,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 - **Otherwise** — Run the bundled polling script:
 
   ```bash
-  scripts/poll_until_approved.sh <PR_NUMBER> <OWNER/REPO>
+  "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
   ```
 
   The script polls every 5 minutes for up to 4 hours. On timeout, it posts
@@ -213,7 +213,7 @@ gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
 After merging, clean up the topic branch locally and remotely:
 
 ```bash
-scripts/clean_topic_branch.sh
+"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/clean_topic_branch.sh"
 ```
 
 The script switches to the default branch, pulls the latest changes, and
