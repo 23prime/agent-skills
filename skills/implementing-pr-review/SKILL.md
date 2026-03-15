@@ -176,6 +176,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 - **Otherwise** — Run the bundled polling script:
 
   ```bash
+  # Use run_in_background: true to avoid the 10-minute Bash tool timeout
   "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
   ```
 

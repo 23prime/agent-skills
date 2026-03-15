@@ -175,6 +175,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 - **それ以外** — バンドルされたポーリングスクリプトを実行する:
 
   ```bash
+  # Bash ツールの10分タイムアウトを回避するため run_in_background: true で実行する
   "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
   ```
 
