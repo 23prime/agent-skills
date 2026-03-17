@@ -130,8 +130,15 @@ gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> | jq '[.reviews[]?.comments
    git push
    ```
 
-5. `git rev-parse HEAD` で取得した完全なコミットハッシュを使い、
-   このコミットに属するすべての PR コメントに返信する:
+5. **別の** Bash ツール呼び出しでコミットハッシュを取得する（`$()` コマンド置換は
+   使わない — `git rev-parse HEAD` を単独で実行し、その出力をリテラル文字列として
+   次の呼び出しに埋め込む）:
+
+   ```bash
+   git rev-parse HEAD
+   ```
+
+   その後、このコミットに属するすべての PR コメントに返信する:
 
    ```bash
    gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \

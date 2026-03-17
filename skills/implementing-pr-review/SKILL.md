@@ -130,8 +130,15 @@ For each accepted comment or group:
    git push
    ```
 
-5. Reply to every PR comment that belongs to this commit using the full commit
-   hash obtained from `git rev-parse HEAD`:
+5. Obtain the commit hash with a **separate** Bash tool call (do **not** use
+   `$()` command substitution — run `git rev-parse HEAD` on its own, capture
+   the output, then embed it as a literal string in the next call):
+
+   ```bash
+   git rev-parse HEAD
+   ```
+
+   Then reply to every PR comment that belongs to this commit:
 
    ```bash
    gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \
