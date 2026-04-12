@@ -1,0 +1,4 @@
+# List of template-derived repositories to sync (one name per line).
+# Copy this file to sync_targets.txt and edit it for your environment.
+# repo-name-1
+# repo-name-2
