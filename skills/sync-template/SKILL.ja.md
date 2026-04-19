@@ -26,6 +26,13 @@ translated_from: SKILL.md
 
 出力の混在や git 操作の競合を避けるため、**逐次実行**する（並列不可）。
 
+grep 等にパイプすると終了コードが失われるため、出力と終了コードは以下のように取得する:
+
+```bash
+output=$(./skills/sync-template/scripts/sync-upstream.sh ~/develop/<repo-name> 2>&1)
+exit_code=$?
+```
+
 ### 3. 結果の報告
 
 全リポジトリの処理が完了したら、サマリーテーブルを報告する:

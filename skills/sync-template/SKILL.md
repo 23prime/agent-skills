@@ -25,6 +25,13 @@ For each repo name, run the bundled sync script:
 
 Run repos **sequentially** (not in parallel) to avoid interleaved output and conflicting git operations.
 
+Capture output and exit code without piping through grep — piping loses the script's exit code:
+
+```bash
+output=$(./skills/sync-template/scripts/sync-upstream.sh ~/develop/<repo-name> 2>&1)
+exit_code=$?
+```
+
 ### 3. Report results
 
 After all repos are processed, report a summary table:
