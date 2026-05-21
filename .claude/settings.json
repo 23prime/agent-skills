@@ -15,7 +15,8 @@
       "Bash(mise fix-md:*)",
       "Bash(rm -f skills/:*)",
       "Bash(coderabbit review --prompt-only)",
-      "Bash(./skills/sync-template/scripts/sync-upstream.sh:*)"
+      "Bash(./skills/sync-template/scripts/sync-upstream.sh:*)",
+      "Bash(./skills/sync-template/scripts/sync-all.sh:*)"
     ],
 
     "ask": [
