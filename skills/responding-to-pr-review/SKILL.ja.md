@@ -1,5 +1,5 @@
 ---
-name: implementing-pr-review
+name: responding-to-pr-review
 description: "GitHub Pull Request のレビューコメントを取得し、各コメントの正確性とベストプラクティスへの適合性を批判的に評価する。妥当な提案のみをソースコードまたはドキュメントに反映する。修正適用後は PR が承認されるまでポーリングを続け、新しいコメントが来るたびにレビューサイクルを再開する。ユーザーが PR の URL を提示してレビューフィードバックを適用・実装するよう求めた場合、または承認されるまで繰り返し対応したい場合に使用する。"
 translated_from: SKILL.md
 ---
@@ -183,7 +183,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 
   ```bash
   # Bash ツールの10分タイムアウトを回避するため run_in_background: true で実行する
-  "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
+  "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/responding-to-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
   ```
 
   スクリプトは 1 分ごとに最大 4 時間ポーリングする。タイムアウト時に
@@ -221,7 +221,7 @@ gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
 マージ後、トピックブランチをローカルとリモートから削除する:
 
 ```bash
-"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/clean_topic_branch.sh"
+"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/responding-to-pr-review/scripts/clean_topic_branch.sh"
 ```
 
 スクリプトはデフォルトブランチに切り替え、最新の変更を pull し、

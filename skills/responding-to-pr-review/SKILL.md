@@ -1,9 +1,9 @@
 ---
-name: implementing-pr-review
+name: responding-to-pr-review
 description: "Fetches review comments from a GitHub Pull Request, critically evaluates each comment for correctness and best-practice alignment, then applies only valid suggestions to source code or documentation. After applying fixes, polls until the PR is approved, restarting the review cycle whenever new comments appear. Use when a user provides a PR URL and asks to apply, act on, or implement the review feedback, or wants to iterate until the PR is approved."
 ---
 
-# Implementing PR Review
+# Responding to PR Review
 
 This skill fetches GitHub PR review comments, judges each one for validity,
 applies the valid ones to the codebase, and replies to each comment with the
@@ -184,7 +184,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 
   ```bash
   # Use run_in_background: true to avoid the 10-minute Bash tool timeout
-  "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
+  "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/responding-to-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
   ```
 
   The script polls every 1 minute for up to 4 hours. On timeout, it posts
@@ -221,7 +221,7 @@ gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
 After merging, clean up the topic branch locally and remotely:
 
 ```bash
-"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/implementing-pr-review/scripts/clean_topic_branch.sh"
+"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/responding-to-pr-review/scripts/clean_topic_branch.sh"
 ```
 
 The script switches to the default branch, pulls the latest changes, and
