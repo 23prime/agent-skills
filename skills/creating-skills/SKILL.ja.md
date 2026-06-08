@@ -144,11 +144,11 @@ scripts/quick_validate.py <path/to/skill-folder>
 Markdown リンターを実行し、スキル内の SKILL.md およびその他の Markdown ファイルを自動修正・検証する:
 
 ```bash
-mise run fix-md
-mise run check-md
+mise run md-fix
+mise run md-check
 ```
 
-自動修正後もエラーが残る場合は、`check-md` がエラーゼロになるまで手動で修正する。
+自動修正後もエラーが残る場合は、`md-check` がエラーゼロになるまで手動で修正する。
 
 ### ステップ 7: 評価とイテレーション
 

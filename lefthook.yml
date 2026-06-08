@@ -3,7 +3,7 @@
 pre-commit:
   jobs:
     - name: Fix markdown
-      run: mise fix-md
+      run: mise md-fix
 
     - name: Check markdown
-      run: mise check-md
+      run: mise md-check

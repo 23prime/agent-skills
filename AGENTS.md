@@ -40,8 +40,8 @@ Skills use progressive disclosure: metadata → SKILL.md body → bundled resour
 
 ## Common Commands
 
-- **Markdown lint check**: `mise run check-md`
-- **Markdown lint fix**: `mise run fix-md`
+- **Markdown lint check**: `mise run md-check`
+- **Markdown lint fix**: `mise run md-fix`
 - **Link skills globally**: `mise run link` — creates a symlink to `~/.claude/skills`
 
 ## Skill Workflow

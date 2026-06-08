@@ -53,7 +53,7 @@ Before committing, run the following to check and auto-fix, and confirm it passe
 1. Run markdown lint (check + auto-fix)
 
     ```sh
-    mise fix-md
+    mise md-fix
     ```
 
 ## Pull Requests

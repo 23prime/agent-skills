@@ -39,8 +39,8 @@ Write Markdown that passes `markdownlint-cli2` with zero errors, based on the pr
 After writing or editing Markdown files, run:
 
 ```bash
-mise run fix-md
-mise run check-md
+mise run md-fix
+mise run md-check
 ```
 
-If errors remain after auto-fix, manually correct them until `check-md` passes with zero errors.
+If errors remain after auto-fix, manually correct them until `md-check` passes with zero errors.

@@ -143,11 +143,11 @@ If validation fails, fix the reported errors and run the command again.
 Run the markdown linter to auto-fix and verify SKILL.md and any other markdown files in the skill:
 
 ```bash
-mise run fix-md
-mise run check-md
+mise run md-fix
+mise run md-check
 ```
 
-If errors remain after auto-fix, manually correct them until `check-md` passes with zero errors.
+If errors remain after auto-fix, manually correct them until `md-check` passes with zero errors.
 
 ### Step 7: Evaluate and Iterate
 

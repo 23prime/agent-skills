@@ -40,8 +40,8 @@ translated_from: SKILL.md
 Markdown ファイルの作成・編集後、以下を実行する:
 
 ```bash
-mise run fix-md
-mise run check-md
+mise run md-fix
+mise run md-check
 ```
 
-自動修正後もエラーが残る場合は、`check-md` がエラーゼロになるまで手動で修正する。
+自動修正後もエラーが残る場合は、`md-check` がエラーゼロになるまで手動で修正する。

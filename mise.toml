@@ -1,28 +1,76 @@
-# See: https://mise.jdx.dev/tasks/toml-tasks.html
+# ================================================================
+# Settings
+# ================================================================
+[settings]
+auto_install = false
+minimum_release_age = "3d"
 
+
+# ================================================================
+# Tools
+# ================================================================
 [tools]
-markdownlint-cli2 = "latest"
-lefthook = "latest"
+
+node = "26"
+
+# Markdown
+markdownlint-cli2 = "0.22"
+
+# Git
+lefthook = "2"
+
+# Python
 uv = "latest"
 
+
+# ================================================================
+# Tasks
+# See: https://mise.jdx.dev/tasks/toml-tasks.html
+# ================================================================
+
+# Global
 [tasks.setup]
 description = "Setup tools"
-run = ["uv python install", "uv sync", "lefthook install"]
+env = { GITHUB_TOKEN = "{{ exec(command='gh auth token') }}" }
+run = [
+  "mise trust -yq",
+  "mise install",
+  "lefthook install",
+  "uv python install",
+  "uv sync",
+]
 alias = "s"
 
+[tasks.fix]
+description = "Fix all issues"
+depends = ["md-fix"]
+alias = "f"
+
+[tasks.check]
+description = "Check for all issues"
+depends = ["md-check"]
+alias = "c"
+
+[tasks.fix-and-check]
+run = [{ task = "fix" }, { task = "check" }]
+description = "Fix all issues and check for issues"
+alias = "fc"
+
+# Markdown
+[tasks.md-fix]
+description = "Fix Markdown issues"
+run = "markdownlint-cli2 '**/*.md' --fix"
+alias = "mf"
+
+[tasks.md-check]
+description = "Check for Markdown issues"
+run = "markdownlint-cli2 '**/*.md'"
+alias = "mc"
+
+# Link
 [tasks.link]
 description = "Create a symbolic link to your each Claude directory."
 usage = '''
 arg "<claude_home>" help="Path to your Claude home directory." default="~/.claude"
 '''
 run = ["ln -sfn $(pwd)/skills ${usage_claude_home}/skills"]
-
-[tasks.fix-md]
-description = "Fix markdown"
-run = ["markdownlint-cli2 '**/*.md' --fix"]
-alias = "fm"
-
-[tasks.check-md]
-description = "Check markdown"
-run = ["markdownlint-cli2 '**/*.md'"]
-alias = "cm"
