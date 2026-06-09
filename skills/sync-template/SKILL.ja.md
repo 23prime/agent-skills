@@ -50,6 +50,6 @@ exit_code=$?
 
 ## 補足
 
-- `scripts/sync-upstream.sh` は `upstream/main` から pull してマージし、`origin/main` に push する。その後 `sync-upstream-*` ブランチをローカル・リモート両方から削除し、`git fetch --prune` を実行する
+- `scripts/sync-upstream.sh` は `upstream/main` から pull してマージし、`mise.toml` が存在する場合は `mise run setup` を実行して更新されたツールをインストールしてから `origin/main` に push する。その後 `sync-upstream-*` ブランチをローカル・リモート両方から削除し、`git fetch --prune` を実行する
 - スクリプトが非ゼロの終了コードを返した場合はそのリポジトリを失敗とし、次へ進む
 - 失敗してもループを中断しない

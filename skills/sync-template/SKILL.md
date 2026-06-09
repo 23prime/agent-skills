@@ -43,5 +43,5 @@ For each failed repo, add a recommended action:
 
 ## Notes
 
-- `scripts/sync-upstream.sh` pulls from `upstream/main`, merges, pushes to `origin/main`, deletes `sync-upstream-*` branches (local and remote), and runs `git fetch --prune`
+- `scripts/sync-upstream.sh` pulls from `upstream/main`, merges, runs `mise run setup` (if `mise.toml` exists) to install any updated tools, pushes to `origin/main`, deletes `sync-upstream-*` branches (local and remote), and runs `git fetch --prune`
 - `scripts/sync-all.sh` runs repos sequentially to avoid conflicting git operations and never aborts on failure

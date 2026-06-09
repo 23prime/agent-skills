@@ -17,6 +17,12 @@ echo "[INFO] Syncing $(basename "$REPO_DIR")..."
 git pull origin main
 git fetch upstream
 git merge upstream/main
+
+if [ -f "mise.toml" ] || [ -f ".mise.toml" ]; then
+  echo "[INFO] Running mise run setup..."
+  mise run setup
+fi
+
 git push origin main
 
 echo "[INFO] Cleaning up sync-upstream-* branches..."
