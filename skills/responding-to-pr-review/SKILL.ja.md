@@ -4,7 +4,7 @@ description: "GitHub Pull Request のレビューコメントを取得し、各�
 translated_from: SKILL.md
 ---
 
-# Implementing PR Review
+# Responding to PR Review
 
 このスキルは GitHub PR のレビューコメントを取得し、各コメントの妥当性を判断したうえで
 有効なものをコードベースに反映し、各コメントに修正コミットのハッシュまたは判断理由を返信する。
