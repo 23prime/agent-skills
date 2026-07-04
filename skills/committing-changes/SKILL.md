@@ -49,9 +49,21 @@ Key rules:
 - Summarize the *why*, not just the *what*
 - Add an optional body (line 3+) only when the reason or context is non-obvious
 
-### 5. Confirm with the user
+### 5. Confirm with the user — only when committing directly to the default branch
 
-Present the proposed commit message and the list of staged files to the user. Wait for approval before proceeding. If the user requests changes, revise and re-confirm.
+Check the current branch and the repo's default branch:
+
+```bash
+git branch --show-current
+gh repo view --json defaultBranchRef --jq .defaultBranchRef.name
+```
+
+- **Current branch is a topic/feature branch (not the default branch)** — skip
+  confirmation and go straight to step 6.
+- **Current branch IS the default branch** (committing directly to
+  main/master) — present the proposed commit message and the list of staged
+  files, and wait for approval before proceeding. If the user requests
+  changes, revise and re-confirm.
 
 ### 6. Execute the commit
 

@@ -67,3 +67,9 @@ Invoke `responding-to-pr-review` and iterate until the PR is merged.
 - Step 2 is always invoked, even for small Issues; the skill decides whether decomposition is needed.
 - Steps 4–5 may repeat multiple times before moving to step 6.
 - If the PR review reveals scope creep or new requirements, return to step 1.
+- The user's request to run this skill is standing authorization for the whole
+  lifecycle, including pushing branches/commits and opening the PR. Move from
+  step to step without adding your own extra check-in before those actions.
+  The only stops are the confirmation points each sub-skill already defines
+  (e.g. decomposition breakdown, commit message, PR review plan, merge) —
+  do not add another one on top.
