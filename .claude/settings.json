@@ -19,11 +19,6 @@
       "Bash(./skills/sync-template/scripts/sync-all.sh:*)",
       "Bash(./skills/merge-bot-prs/scripts/check.sh:*)",
       "Bash(./skills/merge-bot-prs/scripts/merge.sh:*)"
-    ],
-
-    "ask": [
-      "Bash(git add:*)",
-      "Bash(git commit:*)"
     ]
   }
 }
