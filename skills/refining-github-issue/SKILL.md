@@ -47,9 +47,10 @@ Example questions:
 - "X may conflict with the existing Y — how should this be handled?"
 - "Is this a user-facing change or internal implementation only?"
 
-### 4. Update the Issue (optional)
+### 4. Update the Issue
 
-With the user's consent, write the refined content back to the Issue.
+Propose writing the refined content back to the Issue. Show it as a diff
+against the current body and confirm before writing:
 
 ```bash
 gh issue edit <number> --body "$(cat <<'EOF'
@@ -57,8 +58,6 @@ gh issue edit <number> --body "$(cat <<'EOF'
 EOF
 )"
 ```
-
-Always show the proposed changes to the user before executing the update.
 
 ## Output Format
 
