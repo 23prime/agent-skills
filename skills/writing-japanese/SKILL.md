@@ -14,6 +14,7 @@ Write Japanese technical prose with consistent punctuation, half-width/full-widt
 - Add a closing period（句点）as a rule, including in list items and table cells.
 - Omit the period when a line is a bare noun or ends in 体言止め (a listing of nouns, not a full sentence).
 - Keep each sentence as short as possible. There is no fixed rule for comma（読点）placement.
+- Within a single list or table, keep the sentence ending consistent across items: all 体言止め, or all full sentences with a period. Do not mix the two styles in one list or table.
 
 ### Prose style（文体）
 
@@ -50,7 +51,8 @@ When reviewing existing Japanese text, check in this order:
 
 1. Periods are present on sentences, and correctly omitted on 体言止め lines.
 2. Sentences are kept short.
-3. です・ます調 or だ・である調 is consistent within documents of the same kind.
-4. Spaces are present between Japanese text and adjacent alphanumerics.
-5. Half-width/full-width usage matches the table above.
-6. Katakana loanwords follow the long-vowel conventions.
+3. Within each list or table, sentence endings are consistent: all 体言止め, or all full sentences with a period, not mixed.
+4. です・ます調 or だ・である調 is consistent within documents of the same kind.
+5. Spaces are present between Japanese text and adjacent alphanumerics.
+6. Half-width/full-width usage matches the table above.
+7. Katakana loanwords follow the long-vowel conventions.
