@@ -17,7 +17,7 @@ translated_from: SKILL.md
 
 ### Step 1: ブランチ情報の収集
 
-以下のコマンドを並行して実行する:
+以下のコマンドを並行して実行する：
 
 ```bash
 git status
@@ -34,13 +34,13 @@ git diff BASE...HEAD
 
 ### Step 2: プッシュの要否の判断
 
-現在のブランチがリモートを追跡しているか、最新かどうかを確認する:
+現在のブランチがリモートを追跡しているか、最新かどうかを確認する：
 
 ```bash
 git status -sb
 ```
 
-ブランチに upstream がない、またはリモートより先行している場合はプッシュする:
+ブランチに upstream がない、またはリモートより先行している場合はプッシュする：
 
 ```bash
 git push -u origin HEAD
@@ -48,17 +48,17 @@ git push -u origin HEAD
 
 ### Step 3: PR タイトルと本文の作成
 
-**タイトル**: 変更内容を要約した 1 文（70 文字以内）。
+**タイトル**：変更内容を要約した 1 文（70 文字以内）。
 プロジェクトが conventional commits を使用している場合は、タイプのプレフィックスを付ける（`feat:`、`fix:`、`chore:` など）。
 
-**本文**: まず PR テンプレートを確認する:
+**本文**：まず PR テンプレートを確認する：
 
 ```bash
 cat .github/pull_request_template.md 2>/dev/null || cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null
 ```
 
 - テンプレートが存在する場合は、そのすべてのセクションを埋める。省略しない。
-- テンプレートが存在しない場合は、以下のフォールバックを使用する:
+- テンプレートが存在しない場合は、以下のフォールバックを使用する：
 
 ```markdown
 ## Checklist
@@ -77,7 +77,7 @@ cat .github/pull_request_template.md 2>/dev/null || cat .github/PULL_REQUEST_TEM
 
 ### Step 4: PR の作成
 
-フォーマットを保持するために heredoc で本文を渡す:
+フォーマットを保持するために heredoc で本文を渡す：
 
 ```bash
 gh pr create --base BASE --title "..." --body "$(cat <<'EOF'
