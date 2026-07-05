@@ -24,8 +24,9 @@ description: Translate a skill's SKILL.md into Japanese and output it as SKILL.j
 2. 対象の SKILL.md を読み込む
 3. 以下の翻訳ルールに従って翻訳する
 4. 同ディレクトリに `SKILL.ja.md` として書き出す
-5. `mise md-fix` コマンドで `SKILL.ja.md` を自動修正し、エラーが残っている場合 `mise md-check` をパスするまで修正する
-6. ユーザーに完了を報告し、翻訳内容の確認を促す
+5. writing-japanese のレビューチェックリストに沿って `SKILL.ja.md` をセルフレビューし、表記の違反を修正する
+6. `mise md-fix` コマンドで `SKILL.ja.md` を自動修正し、エラーが残っている場合 `mise md-check` をパスするまで修正する
+7. ユーザーに完了を報告し、翻訳内容の確認を促す
 
 ## 翻訳ルール
 
@@ -44,6 +45,10 @@ description: Translate a skill's SKILL.md into Japanese and output it as SKILL.j
 - `name`: 英語のまま維持する
 - `description`: 日本語に翻訳する。英語の description は削除し、日本語のみ記載する
 - `translated_from`: `SKILL.md` を値として追加する。翻訳元ファイルを示すカスタムフィールド
+
+### 表記ルール
+
+- **REQUIRED SUB-SKILL:** 句読点・半角全角・カタカナ語・分かち書きなどの表記の詳細は writing-japanese を参照する
 
 ### 文体
 
