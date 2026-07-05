@@ -18,7 +18,7 @@ translated_from: SKILL.md
 
 ### 2. 各リポジトリの同期実行
 
-リポジトリ名ごとに同期スクリプトを実行する:
+リポジトリ名ごとに同期スクリプトを実行する：
 
 ```bash
 ./skills/sync-template/scripts/sync-upstream.sh ~/develop/<repo-name>
@@ -26,7 +26,7 @@ translated_from: SKILL.md
 
 出力の混在や git 操作の競合を避けるため、**逐次実行**する（並列不可）。
 
-grep 等にパイプすると終了コードが失われるため、出力と終了コードは以下のように取得する:
+grep 等にパイプすると終了コードが失われるため、出力と終了コードは以下のように取得する：
 
 ```bash
 output=$(./skills/sync-template/scripts/sync-upstream.sh ~/develop/<repo-name> 2>&1)
@@ -35,21 +35,21 @@ exit_code=$?
 
 ### 3. 結果の報告
 
-全リポジトリの処理が完了したら、サマリーテーブルを報告する:
+全リポジトリの処理が完了したら、サマリーテーブルを報告する：
 
 | Repository | Result      | Notes                          |
 |------------|-------------|--------------------------------|
 | repo-name  | OK / FAILED | 失敗時はエラーメッセージを記載 |
 
-失敗したリポジトリには、エラー出力をもとに推奨アクションを付記する:
+失敗したリポジトリには、エラー出力をもとに推奨アクションを付記する：
 
-- マージコンフリクト → "`~/develop/<repo>` で手動解消してから push する"
-- 認証/SSH エラー → "リモートへの SSH キーのアクセスを確認する"
-- 履歴の乖離 → "`git log` を確認し、`git reset` または手動 rebase を検討する"
-- その他 → 出力の最終エラー行を引用する
+- マージコンフリクト → 「`~/develop/<repo>` で手動解消してから push する」。
+- 認証/SSH エラー → 「リモートへの SSH キーのアクセスを確認する」。
+- 履歴の乖離 → 「`git log` を確認し、`git reset` または手動 rebase を検討する」。
+- その他 → 出力の最終エラー行を引用する。
 
 ## 補足
 
-- `scripts/sync-upstream.sh` は `upstream/main` から pull してマージし、`mise.toml` が存在する場合は `mise run setup` を実行して更新されたツールをインストールしてから `origin/main` に push する。その後 `sync-upstream-*` ブランチをローカル・リモート両方から削除し、`git fetch --prune` を実行する
-- スクリプトが非ゼロの終了コードを返した場合はそのリポジトリを失敗とし、次へ進む
-- 失敗してもループを中断しない
+- `scripts/sync-upstream.sh` は `upstream/main` から pull してマージし、`mise.toml` が存在する場合は `mise run setup` を実行して更新されたツールをインストールしてから `origin/main` に push する。その後 `sync-upstream-*` ブランチをローカル・リモート両方から削除し、`git fetch --prune` を実行する。
+- スクリプトが非ゼロの終了コードを返した場合はそのリポジトリを失敗とし、次へ進む。
+- 失敗してもループを中断しない。
