@@ -183,7 +183,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 
   ```bash
   # Bash ツールの10分タイムアウトを回避するため run_in_background: true で実行する
-  "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/responding-to-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
+  as-poll-until-approved <PR_NUMBER> <OWNER/REPO>
   ```
 
   スクリプトは 1 分ごとに最大 4 時間ポーリングする。タイムアウト時に
@@ -221,7 +221,7 @@ gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
 マージ後、トピックブランチをローカルとリモートから削除する：
 
 ```bash
-"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/responding-to-pr-review/scripts/clean_topic_branch.sh"
+as-clean-topic-branch
 ```
 
 スクリプトはデフォルトブランチに切り替え、最新の変更を pull し、
@@ -237,3 +237,5 @@ gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
   （`gh extension install agynio/gh-pr-review`）が必要。
 - 開始前に作業ブランチがリモートにプッシュ済みであることを確認する
   （プッシュしたコミットが PR 上で可視になるため）。
+- `as-poll-until-approved` と `as-clean-topic-branch` が `$PATH` 上にある
+  ことが前提。`linking-skill-scripts` スキルを一度実行してセットアップする。

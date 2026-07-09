@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: poll_until_approved.sh <PR_NUMBER> <OWNER/REPO>
+# Usage: poll-until-approved.sh <PR_NUMBER> <OWNER/REPO>
 # Polls until the PR is approved or TIMEOUT_HOURS have elapsed.
 # Every MENTION_INTERVAL_MIN minutes, posts a comment asking @coderabbitai to approve.
 set -euo pipefail

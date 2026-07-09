@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: clean_topic_branch.sh [branch]
+# Usage: clean-topic-branch.sh [branch]
 # Switches to the default branch, pulls, and deletes the topic branch
 # locally and remotely. If no branch is specified, uses the current branch.
 set -euo pipefail

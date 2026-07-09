@@ -184,7 +184,7 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
 
   ```bash
   # Use run_in_background: true to avoid the 10-minute Bash tool timeout
-  "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/responding-to-pr-review/scripts/poll_until_approved.sh" <PR_NUMBER> <OWNER/REPO>
+  as-poll-until-approved <PR_NUMBER> <OWNER/REPO>
   ```
 
   The script polls every 1 minute for up to 4 hours. On timeout, it posts
@@ -221,7 +221,7 @@ gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
 After merging, clean up the topic branch locally and remotely:
 
 ```bash
-"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/responding-to-pr-review/scripts/clean_topic_branch.sh"
+as-clean-topic-branch
 ```
 
 The script switches to the default branch, pulls the latest changes, and
@@ -237,3 +237,5 @@ deletes the topic branch both locally and from the remote.
   (`gh extension install agynio/gh-pr-review`)
 - Ensure the working branch is pushed to a remote before starting so that
   pushed commits are visible in the PR
+- Requires `as-poll-until-approved` and `as-clean-topic-branch` on `$PATH` —
+  run the `linking-skill-scripts` skill once to set this up.
