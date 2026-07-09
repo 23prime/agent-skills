@@ -1,6 +1,6 @@
 ---
 name: linking-skill-scripts
-description: このリポジトリの skills/*/scripts/*.sh を as-<name> コマンドとして PATH 上にシンボリックリンクする。${CLAUDE_CONFIG_DIR:-$HOME/.claude} のパス展開（Claude Code の確認プロンプトを毎回誘発する）を避け、スキルがバンドルスクリプトを直接呼び出せるようにする。このリポジトリの初回セットアップ時、バンドルスクリプトの追加・リネーム・削除を pull した後、または他のスキルが as-* コマンドが見つからないと報告したときに使用する。
+description: このリポジトリの skills/*/scripts/*.sh を as-* コマンドとして PATH 上にシンボリックリンクする。${CLAUDE_CONFIG_DIR:-$HOME/.claude} のパス展開（Claude Code の確認プロンプトを毎回誘発する）を避け、スキルがバンドルスクリプトを直接呼び出せるようにする。このリポジトリの初回セットアップ時、バンドルスクリプトの追加・リネーム・削除を pull した後、または他のスキルが as-* コマンドが見つからないと報告したときに使用する。
 translated_from: SKILL.md
 ---
 

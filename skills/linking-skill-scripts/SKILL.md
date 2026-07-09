@@ -1,6 +1,6 @@
 ---
 name: linking-skill-scripts
-description: Symlinks this repo's skills/*/scripts/*.sh files onto PATH as as-<name> commands, so skills can invoke their bundled scripts directly instead of expanding ${CLAUDE_CONFIG_DIR:-$HOME/.claude} paths (which triggers repeated permission prompts). Use when setting up this repo for the first time, after pulling changes that add, rename, or remove bundled scripts, or when a skill reports its as-* command is not found.
+description: Symlinks this repo's skills/*/scripts/*.sh files onto PATH as as-* commands, so skills can invoke their bundled scripts directly instead of expanding ${CLAUDE_CONFIG_DIR:-$HOME/.claude} paths (which triggers repeated permission prompts). Use when setting up this repo for the first time, after pulling changes that add, rename, or remove bundled scripts, or when a skill reports its as-* command is not found.
 ---
 
 # Linking Skill Scripts
