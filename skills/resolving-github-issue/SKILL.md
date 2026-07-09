@@ -30,6 +30,8 @@ The skill detects naming conventions and syncs the default branch automatically.
 
 Work through the acceptance criteria. The implementation method depends on the project:
 run tests, apply configuration, edit code — whatever the Issue requires.
+Check whether the project has its own implementation-related skills (e.g. for DB schema
+changes or API spec updates) and use them when relevant.
 
 ### 5. Review
 
