@@ -31,21 +31,28 @@ The skill detects naming conventions and syncs the default branch automatically.
 Work through the acceptance criteria. The implementation method depends on the project:
 run tests, apply configuration, edit code — whatever the Issue requires.
 
-### 5. Commit
+### 5. Review
 
-Invoke `committing-changes` when a logical unit of work is complete.
-Repeat steps 4–5 as needed until all acceptance criteria are met.
+When a logical unit of work is complete, invoke `review-and-fix` in its default (uncommitted) mode to catch issues before they're committed.
 
-### 6. Self-review
+### 6. Commit
 
-Invoke `reviewing-changes` before opening the PR.
-Fix any issues found, then commit the fixes (`committing-changes`).
+Invoke `committing-changes`.
+Repeat steps 4–6 as needed until all acceptance criteria are met.
 
-### 7. Open a PR
+### 7. Final self-review
+
+Invoke `review-and-fix` in branch mode (diff against the base branch): steps 4–6 already committed the implementation incrementally, so there is nothing uncommitted left for the default mode to review. It fixes any issues found but does not commit — it leaves the fixes in the working tree.
+
+### 8. Commit the fixes
+
+Invoke `committing-changes` to commit whatever `review-and-fix` changed. Skip this step if step 7 found nothing to fix.
+
+### 9. Open a PR
 
 Invoke `creating-pull-request`.
 
-### 8. Respond to review
+### 10. Respond to review
 
 Invoke `responding-to-pr-review` and iterate until the PR is merged.
 
@@ -56,16 +63,18 @@ Invoke `responding-to-pr-review` and iterate until the PR is merged.
 | 1 | `refining-github-issue` |
 | 2 | `decomposing-github-issue` |
 | 3 | `creating-branch` |
-| 5 | `committing-changes` |
-| 6 | `reviewing-changes` |
-| 7 | `creating-pull-request` |
-| 8 | `responding-to-pr-review` |
+| 5 | `review-and-fix` |
+| 6 | `committing-changes` |
+| 7 | `review-and-fix` |
+| 8 | `committing-changes` |
+| 9 | `creating-pull-request` |
+| 10 | `responding-to-pr-review` |
 
 ## Important
 
 - Complete step 1 before writing any code — implementation without clear acceptance criteria wastes effort.
 - Step 2 is always invoked, even for small Issues; the skill decides whether decomposition is needed.
-- Steps 4–5 may repeat multiple times before moving to step 6.
+- Steps 4–6 may repeat multiple times before moving to step 7.
 - If the PR review reveals scope creep or new requirements, return to step 1.
 - The user's request to run this skill is standing authorization for the whole
   lifecycle, including pushing branches/commits and opening the PR. Move from

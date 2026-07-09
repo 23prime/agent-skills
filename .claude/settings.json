@@ -14,7 +14,7 @@
       "Bash(mise run md-fix:*)",
       "Bash(mise md-fix:*)",
       "Bash(rm -f skills/:*)",
-      "Bash(coderabbit review --prompt-only)",
+      "Bash(coderabbit review --agent)",
       "Bash(./skills/sync-template/scripts/sync-upstream.sh:*)",
       "Bash(./skills/sync-template/scripts/sync-all.sh:*)",
       "Bash(./skills/merge-bot-prs/scripts/check.sh:*)",

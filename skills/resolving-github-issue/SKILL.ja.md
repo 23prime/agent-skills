@@ -32,21 +32,28 @@ Issue 番号とタイトルで `creating-branch` を呼び出す。
 受け入れ条件に従って作業する。実装方法はプロジェクトによる：
 テスト実行、設定変更、コード編集 -- Issue が求めるものを行う。
 
-### 5. コミットする
+### 5. レビューする
 
-論理的なまとまりの作業が完了したら `committing-changes` を呼び出す。
-全ての受け入れ条件を満たすまでステップ 4〜5 を繰り返す。
+論理的なまとまりの作業が完了したら、コミット前に `review-and-fix` をデフォルト（未コミット）モードで呼び出して問題を検出・修正する。
 
-### 6. 自己レビューする
+### 6. コミットする
 
-PR を開く前に `reviewing-changes` を呼び出す。
-問題が見つかれば修正し、`committing-changes` でコミットする。
+`committing-changes` を呼び出す。
+全ての受け入れ条件を満たすまでステップ 4〜6 を繰り返す。
 
-### 7. PR を作成する
+### 7. 最終自己レビューする
+
+`review-and-fix` をブランチモード（ベースブランチとの差分）で呼び出す。ステップ 4〜6 で実装は既に段階的にコミット済みのため、デフォルトモードがレビューする未コミットの差分が残っていない。問題が見つかれば修正するが、コミットは行わず修正をワーキングツリーに残す。
+
+### 8. 修正をコミットする
+
+`review-and-fix` が行った変更を `committing-changes` でコミットする。ステップ 7 で修正がなければこのステップは省略する。
+
+### 9. PR を作成する
 
 `creating-pull-request` を呼び出す。
 
-### 8. レビューに対応する
+### 10. レビューに対応する
 
 `responding-to-pr-review` を呼び出し、PR がマージされるまで繰り返す。
 
@@ -57,16 +64,18 @@ PR を開く前に `reviewing-changes` を呼び出す。
 | 1 | `refining-github-issue` |
 | 2 | `decomposing-github-issue` |
 | 3 | `creating-branch` |
-| 5 | `committing-changes` |
-| 6 | `reviewing-changes` |
-| 7 | `creating-pull-request` |
-| 8 | `responding-to-pr-review` |
+| 5 | `review-and-fix` |
+| 6 | `committing-changes` |
+| 7 | `review-and-fix` |
+| 8 | `committing-changes` |
+| 9 | `creating-pull-request` |
+| 10 | `responding-to-pr-review` |
 
 ## 注意事項
 
 - ステップ 1 を完了してからコードを書く -- 受け入れ条件が不明なまま実装すると手戻りが発生する。
 - ステップ 2 は小さい Issue でも必ず呼び出す。分解が必要かどうかはスキルが判断する。
-- ステップ 4〜5 はステップ 6 に進む前に複数回繰り返すことがある。
+- ステップ 4〜6 はステップ 7 に進む前に複数回繰り返すことがある。
 - PR レビューでスコープ拡大や新たな要件が発覚した場合はステップ 1 に戻る。
 - このスキルを実行してほしいというユーザーの依頼自体が、ブランチ・コミットの
   push や PR の作成を含むライフサイクル全体への事前承認である。各ステップの
