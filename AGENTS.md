@@ -38,6 +38,15 @@ skill-name/
 
 Skills use progressive disclosure: metadata → SKILL.md body → bundled resources, to manage token usage.
 
+Bundled scripts under `scripts/` use kebab-case filenames (e.g.
+`poll-until-approved.sh`). Any `scripts/*.sh` file that a `SKILL.md`
+workflow invokes directly (not merely reads or references as a path) must
+be exposed on `$PATH` rather than called via
+`${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/...` expansion. Name it
+`as-<script-basename-without-extension>` (flat namespace, no per-skill
+prefix) and reference it that way in `SKILL.md`. Use the
+`linking-skill-scripts` skill to place the symlink.
+
 ## Common Commands
 
 - **Markdown lint check**: `mise run md-check`
