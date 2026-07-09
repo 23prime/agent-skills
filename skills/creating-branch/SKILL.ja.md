@@ -22,7 +22,14 @@ upstream トラッキングを設定してリモートに push する。
    ```
 
    見つかったファイルを読み、ブランチ命名規則が記載されていないか確認する。
-2. 既存のリモートブランチから、すでに存在するブランチ名のパターンを推定：
+2. 規則は `docs/git.md` のような無関係な名前のファイルに書かれていることもある。ファイル名ではなく Markdown の内容そのものをブランチ関連のルールで検索する：
+
+   ```bash
+   rg -il -e 'branch' -e '(feature|fix|hotfix|chore|docs|refactor)/' -g '*.md'
+   ```
+
+   見つかったファイルを読み、ブランチ命名規則が記載されていないか確認する。
+3. 既存のリモートブランチから、すでに存在するブランチ名のパターンを推定：
 
    ```bash
    git branch -r --format '%(refname:short)' | grep -v 'HEAD\|main\|master\|develop'

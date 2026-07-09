@@ -21,7 +21,14 @@ Look for branch naming rules in this order:
    ```
 
    Read any files found and look for branch naming conventions.
-2. Existing remote branches — infer the pattern from names already in use:
+2. Conventions can also live in a doc with an unrelated filename (e.g. `docs/git.md`). Search markdown *content*, not just filenames, for branch-related rules:
+
+   ```bash
+   rg -il -e 'branch' -e '(feature|fix|hotfix|chore|docs|refactor)/' -g '*.md'
+   ```
+
+   Read any files found and look for branch naming conventions.
+3. Existing remote branches — infer the pattern from names already in use:
 
    ```bash
    git branch -r --format '%(refname:short)' | grep -v 'HEAD\|main\|master\|develop'
