@@ -14,7 +14,7 @@ Run CodeRabbit CLI to review current changes, fix reported issues one by one, an
 Execute CodeRabbit in prompt-only mode to get review feedback:
 
 ```bash
-coderabbit review --prompt-only
+coderabbit review --agent
 ```
 
 ### 2. Evaluate feedback
@@ -33,7 +33,7 @@ For each actionable issue:
 
 ### 4. Re-review
 
-Run `coderabbit review --prompt-only` again to verify fixes and check for remaining issues.
+Run `coderabbit review --agent` again to verify fixes and check for remaining issues.
 
 Repeat steps 2-4 until no further actionable issues are reported.
 
