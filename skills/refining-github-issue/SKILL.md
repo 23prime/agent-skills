@@ -33,6 +33,7 @@ Read the fetched Issue body **and comments** and identify unclear or ambiguous p
 - **Acceptance criteria**: What is the definition of done?
 - **Constraints and assumptions**: Are there technical or business constraints?
 - **Priority and urgency**: How time-sensitive is this?
+- **Hidden scope**: Are there changes the Issue doesn't mention but that the stated change still requires — CI/workflow configs, other config files, adjacent test types (e.g. E2E alongside unit tests), or docs? List candidates and confirm with the user rather than assuming they're out of scope.
 
 If the Issue already has a clear purpose, explicit scope, and acceptance criteria (e.g., it was previously refined), skip to the Output Format and summarize what is already known. Do not ask redundant questions.
 
