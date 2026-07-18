@@ -14,6 +14,7 @@ fi
 cd "$REPO_DIR"
 echo "[INFO] Syncing $(basename "$REPO_DIR")..."
 
+git switch main
 git pull origin main
 git fetch upstream
 git merge upstream/main
