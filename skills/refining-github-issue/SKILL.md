@@ -39,8 +39,12 @@ If the Issue already has a clear purpose, explicit scope, and acceptance criteri
 
 ### 3. Ask the user questions
 
-Do not ask many questions at once. Narrow down to the 1-3 most important unclear points.
-After receiving answers, ask follow-up questions if deeper clarification is needed.
+Interview the user relentlessly about every unclear point identified in step 2, resolving each one before moving to the next. Do not stop at a vague or partial answer — ask a follow-up that drills into the specific ambiguity until it is resolved.
+
+- Ask **one question at a time**; never batch multiple questions into a single message.
+- Work through the unclear points from step 2 one by one. Do not jump to Output Format while points remain unresolved, unless the user explicitly says to move on.
+- If a question can be answered by exploring the codebase, explore it instead of asking.
+- Where you have a reasonable default, propose it and ask the user to confirm or override, rather than asking an open-ended question.
 
 Example questions:
 
