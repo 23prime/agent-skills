@@ -15,6 +15,7 @@ node = "26"
 
 # Markdown
 markdownlint-cli2 = "0.22"
+"github:k1LoW/mo" = "1.6.4"
 
 # Git
 lefthook = "2"
@@ -66,6 +67,11 @@ alias = "mf"
 description = "Check for Markdown issues"
 run = "markdownlint-cli2 '**/*.md'"
 alias = "mc"
+
+[tasks.view-skills-md]
+description = "View SKILL.md files by mo"
+run = "mo --no-open skills/**/*.md "
+alias = "vsm"
 
 # Link
 [tasks.link]
