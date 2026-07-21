@@ -69,7 +69,7 @@ run = "markdownlint-cli2 '**/*.md'"
 alias = "mc"
 
 [tasks.view-skills-md]
-description = "View SKILL.md files by mo"
+description = "View all Markdown files under skills/ by mo"
 run = "mo --no-open skills/**/*.md "
 alias = "vsm"
 
