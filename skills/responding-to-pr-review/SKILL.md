@@ -194,7 +194,32 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   - `1` — Timed out after 4 hours; report to the user and stop
   - `2` — New unresolved comments found; restart from Step 1
 
-### Step 9 — Merge the PR
+### Step 9 — Run retrospective (optional)
+
+After the PR reaches `APPROVED`, ask the user whether to run the
+`retrospective` skill before merging:
+
+```text
+PR approved. Run a retrospective before merging? [y/N]
+```
+
+- **If yes:**
+  1. Invoke the `retrospective` skill.
+  2. If it left any file changes uncommitted, invoke `committing-changes` to
+     commit and push them.
+  3. Re-check the review decision:
+
+     ```bash
+     gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
+     ```
+
+     If it is no longer `APPROVED` (the push dismissed the approval, on
+     repos configured that way), go back to Step 1 to handle the PR as if
+     new review activity occurred. Otherwise proceed to Step 10.
+  4. If `retrospective` made no changes, proceed directly to Step 10.
+- **If no** — proceed directly to Step 10.
+
+### Step 10 — Merge the PR
 
 After the PR is approved, wait for all required checks to pass:
 
@@ -216,7 +241,7 @@ On confirmation, run:
 gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
 ```
 
-### Step 10 — Clean up topic branch
+### Step 11 — Clean up topic branch
 
 After merging, clean up the topic branch locally and remotely:
 
