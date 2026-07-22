@@ -53,11 +53,6 @@ prefix) and reference it that way in `SKILL.md`. Use the
 - **Markdown lint fix**: `mise run md-fix`
 - **Link skills globally**: `mise run link` — creates a symlink to `~/.claude/skills`
 
-## Skill Workflow
-
-- **Create**: `uv run python skills/creating-skills/scripts/init_skill.py <skill-name> --path <output-dir>`
-- **Validate**: `uv run python skills/creating-skills/scripts/quick_validate.py <path/to/skill-folder>`
-
 ## Validation Rules
 
 - Skill name: lowercase, digits, hyphens only (hyphen-case), max 40 chars, no leading/trailing/consecutive hyphens
