@@ -59,7 +59,7 @@ translated_from: SKILL.md
 
 承認後、残った項目を書き込み先ごとに適用する。
 
-- **CLAUDE.md / .claude/rules の項目** — `organizing-claude-memory` スキルを呼び出し、各項目の確定した指示文を渡す。このスキルは `CLAUDE.md` ではなく `AGENTS.md` がプロジェクトの実質的な正本であるケースを自動判定し、プロジェクト全体の指示であればそちらに振り分ける――ここで個別対応する必要はない。
+- **CLAUDE.md / .claude/rules の項目** — `updating-agent-rules` スキルを呼び出し、各項目の確定した指示文を渡す。このスキルは `CLAUDE.md` ではなく `AGENTS.md` がプロジェクトの実質的な正本であるケースを自動判定し、プロジェクト全体の指示であればそちらに振り分ける――ここで個別対応する必要はない。
 - **auto-memory の項目** — 直接書き込む。この環境の既存の auto-memory 形式（メモリディレクトリ配下の frontmatter 付き Markdown ファイル、および `MEMORY.md` への一行の追記）に従う。その形式が定義する `type` 分類（user/feedback/project/reference）をそのまま使う。新規作成の前に、更新すべき既存のメモリファイルがないか確認する。
 - **SKILL.md の項目** — `writing-skills` スキルを呼び出し、対象スキル名と修正案を渡す。
 
@@ -77,6 +77,6 @@ translated_from: SKILL.md
 
 ## 注意事項
 
-- `CLAUDE.md`、`AGENTS.md`、`.claude/rules/*.md`、他スキルの `SKILL.md` を直接編集しない――常に管轄スキル（`organizing-claude-memory` または `writing-skills`）に委譲し、そのスキル自身の規約や矛盾チェックを働かせる。
+- `CLAUDE.md`、`AGENTS.md`、`.claude/rules/*.md`、他スキルの `SKILL.md` を直接編集しない――常に管轄スキル（`updating-agent-rules` または `writing-skills`）に委譲し、そのスキル自身の規約や矛盾チェックを働かせる。
 - 承認は項目ごとではなく一括で行う――全リストを一度に提示して確認を取る。
 - どのカテゴリにも該当がなければ、その旨を伝えて終了する。報告のために知見をでっち上げない。

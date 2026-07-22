@@ -84,7 +84,7 @@ round.
 
 Once approved, apply every remaining item, grouped by destination:
 
-- **CLAUDE.md / .claude/rules items** — invoke the `organizing-claude-memory`
+- **CLAUDE.md / .claude/rules items** — invoke the `updating-agent-rules`
   skill, passing the finalized instruction text for each item. That skill
   detects when `AGENTS.md` (not `CLAUDE.md`) is the project's actual source
   of truth and redirects project-wide instructions there — no separate
@@ -117,7 +117,7 @@ Summarize what was written and where, one line per item:
 
 - Never edit `CLAUDE.md`, `AGENTS.md`, `.claude/rules/*.md`, or another
   skill's `SKILL.md` directly — always delegate to the owning skill
-  (`organizing-claude-memory` or `writing-skills`) so its own conventions
+  (`updating-agent-rules` or `writing-skills`) so its own conventions
   and conflict checks apply.
 - Batch approval, not per-item — ask once with the full list.
 - If nothing qualifies in any category, say so and stop; do not invent
