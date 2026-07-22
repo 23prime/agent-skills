@@ -1,6 +1,6 @@
 ---
 name: retrospective
-description: Use after a GitHub Issue's PR is approved (or standalone at any time) to extract reusable knowledge from the current session — generalizable review feedback, rules that weren't followed, and friction points the agent noticed — and route each item to CLAUDE.md/AGENTS.md/.claude/rules, auto-memory, or the relevant skill's SKILL.md.
+description: Use after a GitHub Issue's PR is approved (or standalone at any time) to extract reusable knowledge from the current session — generalizable review feedback, rules that weren't followed, and friction points the agent noticed — and route each item to CLAUDE.md/.claude/rules, auto-memory, or the relevant skill's SKILL.md.
 ---
 
 # Retrospective
@@ -48,8 +48,7 @@ Assign each candidate exactly one destination, based on its nature:
 
 | Finding shape | Destination |
 | --- | --- |
-| Always-relevant project rule, not AGENTS.md-governed | `CLAUDE.md` / `.claude/rules/` |
-| Always-relevant project rule that belongs in the AGENTS.md SSoT | `AGENTS.md` |
+| Always-relevant project rule | `CLAUDE.md` / `.claude/rules/` |
 | User preference, working style, or project-specific fact (not a project-wide rule) | auto-memory |
 | Gap in a specific skill's instructions | that skill's `SKILL.md` |
 
@@ -66,9 +65,6 @@ Show the full candidate list in one message, grouped by destination, e.g.:
 
 **CLAUDE.md / .claude/rules:**
 1. [description] — [why it matters]
-
-**AGENTS.md:**
-(none)
 
 **auto-memory:**
 2. [description] — [why it matters]
@@ -89,9 +85,10 @@ round.
 Once approved, apply every remaining item, grouped by destination:
 
 - **CLAUDE.md / .claude/rules items** — invoke the `organizing-claude-memory`
-  skill, passing the finalized instruction text for each item.
-- **AGENTS.md items** — invoke the `updating-agent-rules` skill, passing the
-  finalized instruction text for each item.
+  skill, passing the finalized instruction text for each item. That skill
+  detects when `AGENTS.md` (not `CLAUDE.md`) is the project's actual source
+  of truth and redirects project-wide instructions there — no separate
+  handling is needed here.
 - **auto-memory items** — write directly, following this environment's
   existing auto-memory format (a frontmatter Markdown file under the memory
   directory, plus a one-line pointer added to `MEMORY.md`). Use the same
@@ -112,7 +109,6 @@ Summarize what was written and where, one line per item:
 
 ```text
 - CLAUDE.md: <one-line summary>
-- AGENTS.md: (none)
 - auto-memory: <memory file name> — <one-line summary>
 - skills/review-and-fix/SKILL.md: <one-line summary>
 ```
@@ -120,8 +116,9 @@ Summarize what was written and where, one line per item:
 ## Important
 
 - Never edit `CLAUDE.md`, `AGENTS.md`, `.claude/rules/*.md`, or another
-  skill's `SKILL.md` directly — always delegate to the owning skill so its
-  own conventions and conflict checks apply.
+  skill's `SKILL.md` directly — always delegate to the owning skill
+  (`organizing-claude-memory` or `writing-skills`) so its own conventions
+  and conflict checks apply.
 - Batch approval, not per-item — ask once with the full list.
 - If nothing qualifies in any category, say so and stop; do not invent
   findings to fill the report.

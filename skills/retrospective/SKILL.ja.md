@@ -1,6 +1,6 @@
 ---
 name: retrospective
-description: GitHub Issue の PR が承認された後（または任意のタイミングで単独でも）使用し、現在のセッションから再利用可能な知見――他タスクにも通用するレビュー指摘、守れなかったルール、エージェント自身が気づいたつまずき点――を抽出して、CLAUDE.md / AGENTS.md / .claude/rules、auto-memory、または該当スキルの SKILL.md のいずれかに振り分ける。
+description: GitHub Issue の PR が承認された後（または任意のタイミングで単独でも）使用し、現在のセッションから再利用可能な知見――他タスクにも通用するレビュー指摘、守れなかったルール、エージェント自身が気づいたつまずき点――を抽出して、CLAUDE.md / .claude/rules、auto-memory、または該当スキルの SKILL.md のいずれかに振り分ける。
 translated_from: SKILL.md
 ---
 
@@ -28,8 +28,7 @@ translated_from: SKILL.md
 
 | 知見の性質 | 書き込み先 |
 | --- | --- |
-| 常に有効なプロジェクトルールで、AGENTS.md が管轄するものではない | `CLAUDE.md` / `.claude/rules/` |
-| 常に有効なプロジェクトルールで、AGENTS.md という SSoT に属するもの | `AGENTS.md` |
+| 常に有効なプロジェクトルール | `CLAUDE.md` / `.claude/rules/` |
 | ユーザーの好み・作業スタイル・プロジェクト固有の事実（プロジェクト全体のルールではないもの） | auto-memory |
 | 特定スキルの手順の不備 | 該当スキルの `SKILL.md` |
 
@@ -44,9 +43,6 @@ translated_from: SKILL.md
 
 **CLAUDE.md / .claude/rules:**
 1. [内容] — [なぜ重要か]
-
-**AGENTS.md:**
-(なし)
 
 **auto-memory:**
 2. [内容] — [なぜ重要か]
@@ -63,8 +59,7 @@ translated_from: SKILL.md
 
 承認後、残った項目を書き込み先ごとに適用する。
 
-- **CLAUDE.md / .claude/rules の項目** — `organizing-claude-memory` スキルを呼び出し、各項目の確定した指示文を渡す。
-- **AGENTS.md の項目** — `updating-agent-rules` スキルを呼び出し、各項目の確定した指示文を渡す。
+- **CLAUDE.md / .claude/rules の項目** — `organizing-claude-memory` スキルを呼び出し、各項目の確定した指示文を渡す。このスキルは `CLAUDE.md` ではなく `AGENTS.md` がプロジェクトの実質的な正本であるケースを自動判定し、プロジェクト全体の指示であればそちらに振り分ける――ここで個別対応する必要はない。
 - **auto-memory の項目** — 直接書き込む。この環境の既存の auto-memory 形式（メモリディレクトリ配下の frontmatter 付き Markdown ファイル、および `MEMORY.md` への一行の追記）に従う。その形式が定義する `type` 分類（user/feedback/project/reference）をそのまま使う。新規作成の前に、更新すべき既存のメモリファイルがないか確認する。
 - **SKILL.md の項目** — `writing-skills` スキルを呼び出し、対象スキル名と修正案を渡す。
 
@@ -76,13 +71,12 @@ translated_from: SKILL.md
 
 ```text
 - CLAUDE.md: <一行要約>
-- AGENTS.md: (なし)
 - auto-memory: <メモリファイル名> — <一行要約>
 - skills/review-and-fix/SKILL.md: <一行要約>
 ```
 
 ## 注意事項
 
-- `CLAUDE.md`、`AGENTS.md`、`.claude/rules/*.md`、他スキルの `SKILL.md` を直接編集しない――常に管轄スキルに委譲し、そのスキル自身の規約や矛盾チェックを働かせる。
+- `CLAUDE.md`、`AGENTS.md`、`.claude/rules/*.md`、他スキルの `SKILL.md` を直接編集しない――常に管轄スキル（`organizing-claude-memory` または `writing-skills`）に委譲し、そのスキル自身の規約や矛盾チェックを働かせる。
 - 承認は項目ごとではなく一括で行う――全リストを一度に提示して確認を取る。
 - どのカテゴリにも該当がなければ、その旨を伝えて終了する。報告のために知見をでっち上げない。
