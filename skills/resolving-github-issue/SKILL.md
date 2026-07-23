@@ -8,6 +8,11 @@ description: Use when the user wants to work through a GitHub Issue end-to-end, 
 Orchestrate the full lifecycle of a GitHub Issue: clarify → plan → implement → review → merge.
 Each step delegates to a dedicated skill; this skill defines the order and decision points.
 
+> **Tip:** Step 1 (refine) benefits from a more capable model than the rest of this workflow needs.
+> If the current model isn't the most capable available, suggest the user run step 1 on a more
+> capable model first, then `/clear` and resume this skill from step 2 on a more moderate model —
+> the refined Issue body carries the context forward, so nothing is lost.
+
 ## Workflow
 
 ### 1. Refine the Issue
