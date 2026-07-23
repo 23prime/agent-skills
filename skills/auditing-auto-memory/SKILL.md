@@ -15,7 +15,11 @@ touches another project's memory directory.
 ### 1. Locate the memory directory
 
 1. If `autoMemoryDirectory` is set in any applicable `settings.json` scope,
-   use that.
+   resolve it, then confirm with the user that this directory is dedicated
+   to the current project before treating any file in it as in scope — a
+   shared or misconfigured path could mix in another project's memory, and
+   this skill must never touch another project's memory directory (see the
+   Overview).
 2. Otherwise, resolve it the same way Claude Code does: derived from the
    current git repository, under `~/.claude/projects/<project>/memory/` (or
    the active profile's equivalent config directory).
@@ -92,7 +96,11 @@ For each approved action:
   merged-away file and its `MEMORY.md` line.
 - **Keep as-is** — no change.
 
-No commit step: auto memory lives outside the git repository.
+If the resolved memory directory is inside this git repository (possible
+with a custom `autoMemoryDirectory` pointing under the repo root), leave the
+changes uncommitted for the user's own `committing-changes` step — don't
+commit automatically. If it's outside the repository (the default case),
+no commit is needed at all.
 
 ### 6. Report
 
