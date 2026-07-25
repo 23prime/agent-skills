@@ -30,7 +30,7 @@ First, decide which review dimensions the diff needs. Default to running all fiv
 
 Then run the following concurrently:
 
-- Dispatch one subagent (Agent tool, `general-purpose` type) per surviving dimension, in parallel. Pass each the collected diff and its dimension-specific instructions verbatim:
+- Dispatch one subagent (Agent tool, `general-purpose` type) per surviving dimension, in parallel. Pass each the collected diff and its dimension-specific instructions verbatim. The diff must be pasted into the prompt as literal text — the Agent tool's prompt is a plain string, not a shell command, so writing `$(cat diff.txt)` inside it does not expand; it sends those literal characters. Read the collected diff first, then paste its actual content into each prompt.
   1. **Bugs and logic errors** — Scan the diff for off-by-one errors, null/undefined access, wrong comparison operators, missing return values, infinite loops, race conditions.
   2. **Unintended behavior changes** — Scan the diff for accidental removal of logic, swapped arguments, changed defaults.
   3. **Security concerns** — Scan the diff for hardcoded secrets, injection vulnerabilities, missing input validation at system boundaries.
