@@ -61,7 +61,28 @@ Invoke `creating-pull-request`.
 
 ### 10. Respond to review
 
-Invoke `responding-to-pr-review` and iterate until the PR is merged.
+Invoke `responding-to-pr-review` and iterate until the PR is approved.
+
+### 11. Run retrospective
+
+Once the PR reaches `APPROVED`, invoke the `retrospective` skill.
+
+1. If it left any file changes uncommitted, invoke `committing-changes` to
+   commit and push them.
+2. Re-check the review decision:
+
+   ```bash
+   gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
+   ```
+
+   If it is no longer `APPROVED` (the push dismissed the approval, on
+   repos configured that way), go back to step 10 to handle the PR as if
+   new review activity occurred. Otherwise proceed to step 12.
+3. If `retrospective` made no changes, proceed directly to step 12.
+
+### 12. Finish the PR
+
+Invoke `finishing-pull-request` to merge the PR and clean up the topic branch.
 
 ## Sub-skills
 
@@ -76,6 +97,8 @@ Invoke `responding-to-pr-review` and iterate until the PR is merged.
 | 8 | `committing-changes` |
 | 9 | `creating-pull-request` |
 | 10 | `responding-to-pr-review` |
+| 11 | `retrospective` |
+| 12 | `finishing-pull-request` |
 
 ## Important
 

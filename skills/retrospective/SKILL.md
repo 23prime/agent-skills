@@ -100,7 +100,7 @@ Once approved, apply every remaining item, grouped by destination:
 
 Do not commit anything. Leave all file changes (CLAUDE.md, AGENTS.md,
 `.claude/rules/*.md`, `SKILL.md` files) uncommitted in the working tree —
-the caller (e.g. `responding-to-pr-review`) is responsible for committing.
+the caller (e.g. `resolving-github-issue`) is responsible for committing.
 Auto-memory writes need no commit; they live outside the repo.
 
 ### 5. Report

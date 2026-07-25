@@ -61,7 +61,29 @@ Issue 番号とタイトルで `creating-branch` を呼び出す。
 
 ### 10. レビューに対応する
 
-`responding-to-pr-review` を呼び出し、PR がマージされるまで繰り返す。
+`responding-to-pr-review` を呼び出し、PR が承認されるまで繰り返す。
+
+### 11. retrospective を実行する
+
+PR が `APPROVED` になったら、`retrospective` スキルを呼び出す。
+
+1. 未コミットのファイル変更が残っていれば、`committing-changes` を
+   呼び出してコミット・プッシュする。
+2. レビュー承認状況を再確認する：
+
+   ```bash
+   gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
+   ```
+
+   `APPROVED` でなくなっていた場合（リポジトリの設定によってはプッシュが
+   承認を失効させる）、新しいレビュー活動が発生したものとして扱い、
+   ステップ 10 に戻る。それ以外はステップ 12 に進む。
+3. `retrospective` が何も変更しなかった場合は、そのままステップ 12 に進む。
+
+### 12. PR を仕上げる
+
+`finishing-pull-request` を呼び出し、PR のマージとトピックブランチの
+クリーンアップを行う。
 
 ## サブスキル一覧
 
@@ -76,6 +98,8 @@ Issue 番号とタイトルで `creating-branch` を呼び出す。
 | 8 | `committing-changes` |
 | 9 | `creating-pull-request` |
 | 10 | `responding-to-pr-review` |
+| 11 | `retrospective` |
+| 12 | `finishing-pull-request` |
 
 ## 注意事項
 

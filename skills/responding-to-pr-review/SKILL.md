@@ -179,7 +179,8 @@ After resolving conversations, check the PR's review decision:
 gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
 ```
 
-- **`APPROVED`** — The PR is approved. Proceed to Step 9.
+- **`APPROVED`** — The PR is approved. This skill is done; control returns
+  to the caller.
 - **Otherwise** — Run the bundled polling script:
 
   ```bash
@@ -190,67 +191,9 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   The script polls every 1 minute for up to 4 hours. On timeout, it posts
   a single `` `@coderabbitai` resolve `` comment before exiting. Exit codes:
 
-  - `0` — PR approved; proceed to Step 9
+  - `0` — PR approved; this skill is done
   - `1` — Timed out after 4 hours; report to the user and stop
   - `2` — New unresolved comments found; restart from Step 1
-
-### Step 9 — Run retrospective (optional)
-
-After the PR reaches `APPROVED`, ask the user whether to run the
-`retrospective` skill before merging:
-
-```text
-PR approved. Run a retrospective before merging? [y/N]
-```
-
-- **If yes:**
-  1. Invoke the `retrospective` skill.
-  2. If it left any file changes uncommitted, invoke `committing-changes` to
-     commit and push them.
-  3. Re-check the review decision:
-
-     ```bash
-     gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
-     ```
-
-     If it is no longer `APPROVED` (the push dismissed the approval, on
-     repos configured that way), go back to Step 1 to handle the PR as if
-     new review activity occurred. Otherwise proceed to Step 10.
-  4. If `retrospective` made no changes, proceed directly to Step 10.
-- **If no** — proceed directly to Step 10.
-
-### Step 10 — Merge the PR
-
-After the PR is approved, wait for all required checks to pass:
-
-```bash
-gh pr checks <PR_NUMBER> -R <OWNER/REPO> --watch
-```
-
-If checks fail, report to the user and stop.
-
-If checks pass, ask the user for confirmation before merging:
-
-```text
-All checks passed. Merge PR #<PR_NUMBER>? [y/N]
-```
-
-On confirmation, run:
-
-```bash
-gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
-```
-
-### Step 11 — Clean up topic branch
-
-After merging, clean up the topic branch locally and remotely:
-
-```bash
-as-clean-topic-branch
-```
-
-The script switches to the default branch, pulls the latest changes, and
-deletes the topic branch both locally and from the remote.
 
 ## Notes
 
@@ -262,5 +205,5 @@ deletes the topic branch both locally and from the remote.
   (`gh extension install agynio/gh-pr-review`)
 - Ensure the working branch is pushed to a remote before starting so that
   pushed commits are visible in the PR
-- Requires `as-poll-until-approved` and `as-clean-topic-branch` on `$PATH` —
-  run the `linking-skill-scripts` skill once to set this up.
+- Requires `as-poll-until-approved` on `$PATH` — run the
+  `linking-skill-scripts` skill once to set this up.

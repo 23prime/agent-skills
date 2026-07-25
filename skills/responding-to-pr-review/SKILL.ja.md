@@ -178,7 +178,8 @@ gh pr-review comments reply <PR_NUMBER> -R <OWNER/REPO> \
 gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
 ```
 
-- **`APPROVED`**：PR が承認済み。Step 9 に進む。
+- **`APPROVED`**：PR が承認済み。このスキルはここで完了し、呼び出し元に
+  制御を返す。
 - **それ以外**：バンドルされたポーリングスクリプトを実行する：
 
   ```bash
@@ -190,67 +191,9 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   `` `@coderabbitai` resolve `` コメントを1回投稿して終了する。
   終了コード：
 
-  - `0`：PR が承認された。Step 9 に進む。
+  - `0`：PR が承認された。このスキルは完了。
   - `1`：4 時間でタイムアウト。ユーザーに報告して終了する。
   - `2`：新しい未解決コメントを検出。Step 1 から再開する。
-
-### Step 9：retrospective の実行（任意）
-
-PR が `APPROVED` になったら、マージ前に `retrospective` スキルを実行するか
-ユーザーに確認する：
-
-```text
-PR approved. Run a retrospective before merging? [y/N]
-```
-
-- **実行する場合：**
-  1. `retrospective` スキルを呼び出す。
-  2. 未コミットのファイル変更が残っていれば、`committing-changes` を
-     呼び出してコミット・プッシュする。
-  3. レビュー承認状況を再確認する：
-
-     ```bash
-     gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
-     ```
-
-     `APPROVED` でなくなっていた場合（リポジトリの設定によってはプッシュが
-     承認を失効させる）、新しいレビュー活動が発生したものとして扱い、
-     Step 1 に戻る。それ以外は Step 10 に進む。
-  4. `retrospective` が何も変更しなかった場合は、そのまま Step 10 に進む。
-- **実行しない場合** — そのまま Step 10 に進む。
-
-### Step 10：PR をマージする
-
-PR が承認されたら、必須チェックがすべてパスするのを待つ：
-
-```bash
-gh pr checks <PR_NUMBER> -R <OWNER/REPO> --watch
-```
-
-チェックが失敗した場合はユーザーに報告して終了する。
-
-チェックがパスしたら、マージ前にユーザーへ確認する：
-
-```text
-All checks passed. Merge PR #<PR_NUMBER>? [y/N]
-```
-
-承認された場合にマージを実行する：
-
-```bash
-gh pr merge <PR_NUMBER> -R <OWNER/REPO> --merge
-```
-
-### Step 11：トピックブランチのクリーンアップ
-
-マージ後、トピックブランチをローカルとリモートから削除する：
-
-```bash
-as-clean-topic-branch
-```
-
-スクリプトはデフォルトブランチに切り替え、最新の変更を pull し、
-トピックブランチをローカルとリモートの両方から削除する。
 
 ## 備考
 
@@ -262,5 +205,5 @@ as-clean-topic-branch
   （`gh extension install agynio/gh-pr-review`）が必要。
 - 開始前に作業ブランチがリモートにプッシュ済みであることを確認する
   （プッシュしたコミットが PR 上で可視になるため）。
-- `as-poll-until-approved` と `as-clean-topic-branch` が `$PATH` 上にある
-  ことが前提。`linking-skill-scripts` スキルを一度実行してセットアップする。
+- `as-poll-until-approved` が `$PATH` 上にあることが前提。
+  `linking-skill-scripts` スキルを一度実行してセットアップする。
