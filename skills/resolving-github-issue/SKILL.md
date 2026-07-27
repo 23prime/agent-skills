@@ -51,6 +51,8 @@ Repeat steps 4–6 as needed until all acceptance criteria are met.
 
 Invoke `review-and-fix` in branch mode (diff against the base branch): steps 4–6 already committed the implementation incrementally, so there is nothing uncommitted left for the default mode to review. It fixes any issues found but does not commit — it leaves the fixes in the working tree.
 
+Skip this step when the branch diff is identical to what step 5 already reviewed — that is, steps 4–6 ran once and the single commit was made straight after that review, with no edits since. Re-running would review the same diff a second time. Say that this is why it was skipped, and confirm the equivalence (e.g. `git diff main...HEAD --stat` against the reviewed set) rather than asserting it.
+
 ### 8. Commit the fixes
 
 Invoke `committing-changes` to commit whatever `review-and-fix` changed. Skip this step if step 7 found nothing to fix.
