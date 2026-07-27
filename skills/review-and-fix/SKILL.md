@@ -19,6 +19,8 @@ Determine the review scope:
 
 Combine all output as the review target. If the review target is empty, inform the user that there are no changes to review.
 
+Then scan the collected diff for renames (`rename from` / `rename to`, usually with `similarity index 100%`) and note which files were renamed without a content change. CodeRabbit re-reviews such a file's entire pre-existing content as if it were new, and subagents do the same when the diff shows only the rename. Carry the list into steps 2 and 3.
+
 ### 2. Review the diff
 
 First, decide which review dimensions the diff needs. Default to running all five; drop a dimension only when the diff clearly cannot exhibit that failure mode:
@@ -38,6 +40,8 @@ Then run the following concurrently:
   5. **Missed related updates** — Identify what the diff changes (interfaces, flags, config keys, behavior, file/directory layout) and check whether every place in the repo that depends on it was updated too: README and other docs, GitHub Actions workflows (`.github/workflows/`), other CI config, scripts, and cross-references in other skills or files. Grep the repo for the old name/value/path being changed to find anything left stale. Also check the reverse direction: if the diff removes the last usage of a dependency, import, helper, or config entry, confirm it was removed too rather than left as dead weight (e.g. a package.json/go.mod entry, an import statement, an unused env var).
 
   Append to dimensions 1-4's prompts: "Do not comment on style, formatting, naming, or documentation unless it directly causes a bug." Append to all surviving dimensions' prompts: "Return findings as a list grouped by file. For each finding, state the file and approximate line, describe the issue in one sentence, and suggest a fix if it is straightforward. If no issues are found, say so briefly."
+
+  When step 1 found renamed-but-unchanged files, add to every dimension's prompt: "These files are renamed only, with content unchanged: `<list>`. Their pre-existing content is out of scope — do not report issues in it. Do report anything that depends on their old path." Dimension 5 still checks the renames themselves for stale references.
 - Run CodeRabbit with a scope matching step 1, so its findings cover the same range as the subagents': `coderabbit review --agent --type uncommitted` in uncommitted mode, or `coderabbit review --agent --base <base-branch>` in branch mode. If CodeRabbit reports a rate limit, retry after the wait time it reports. If it still reports a rate limit after 3 retries, proceed using only the subagents' findings for this pass and note in the report that CodeRabbit was skipped due to rate limiting — do not block the workflow on it indefinitely.
 
 ### 3. Consolidate findings
@@ -48,6 +52,7 @@ Critically evaluate every finding before accepting it, regardless of source:
 
 - Verify it against the actual diff and surrounding code; do not take a finding at face value.
 - Discard suggestions that are purely stylistic preferences, false positives, or don't hold up under verification.
+- Discard findings that land on unchanged lines of a renamed-but-unchanged file from step 1 — CodeRabbit reports these every pass, so they will reappear on each re-review. Mention them once in the step 6 report as pre-existing and out of scope, rather than fixing them silently.
 - Keep only actionable issues: bugs, logic errors, security concerns, and genuine convention violations backed by evidence.
 
 ### 4. Fix each issue
