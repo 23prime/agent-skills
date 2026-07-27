@@ -50,6 +50,33 @@ Each comment has these fields:
 - `is_outdated` — `true` when the diff has moved past this comment
 - `thread_comments` — array of replies already posted in this thread
 
+**If this returns zero comments, check the review decision before concluding
+there is nothing to do:**
+
+```bash
+gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
+gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviews --jq '.reviews[] | "[\(.author.login) / \(.state)]\n\(.body)"'
+```
+
+When the decision is `CHANGES_REQUESTED` or `COMMENTED` but no inline threads
+exist, the reviewer's inline comments failed to post — CodeRabbit says so
+explicitly at the top of its review body ("Inline review comments failed to
+post"), and its findings are then only in that body, including a section that
+lists them per file and line. Treat those findings as the comment list and
+evaluate them exactly as step 3 describes.
+
+There are no threads to reply to in this case. Instead of the per-thread
+replies in step 5, post one PR-level comment giving the verdict on every
+finding:
+
+```bash
+gh pr comment <PR_NUMBER> -R <OWNER/REPO> --body-file <path>
+```
+
+Use `--body-file` rather than an inline heredoc — a long body is more likely to
+collide with a shell-command guard, and it avoids heredoc quoting problems with
+backticks and `$`.
+
 ### Step 2 — Skip already-handled comments
 
 Before evaluating content, skip any comment that meets any of these conditions:
