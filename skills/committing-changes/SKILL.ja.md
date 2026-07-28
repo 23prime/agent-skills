@@ -41,7 +41,7 @@ translated_from: SKILL.md
 
 ### 4. コミットメッセージの作成
 
-`references/commit-rules.md` を読み、プロジェクトのコミットメッセージ規約に従ってメッセージを作成する。
+まずリポジトリ自身のコミットメッセージ規約を探す（例：`docs/CONTRIBUTING.md`、`CONTRIBUTING.md`、commitlint 設定、`CLAUDE.md`/`AGENTS.md` 内の明示的な規約）。見つかった場合はそれに従う。リポジトリ独自の規約が存在しない場合のみ、`references/commit-rules.md` にフォールバックする。
 
 主なルール：
 
@@ -88,4 +88,4 @@ EOF
 
 ## リファレンス
 
-- `references/commit-rules.md`：コミットメッセージのフォーマットとタイプ定義
+- `references/commit-rules.md`：フォールバック用のコミットメッセージフォーマットとタイプ定義。リポジトリ独自の規約が存在しない場合にのみ使用する。

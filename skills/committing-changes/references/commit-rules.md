@@ -1,5 +1,7 @@
 # Commit Message Rules
 
+This is a fallback convention. If the repository defines its own commit message rules (e.g. `docs/CONTRIBUTING.md`, `CONTRIBUTING.md`, a `commitlint` config, or an explicit convention in `CLAUDE.md`/`AGENTS.md`), follow the repository's rules instead of this file.
+
 Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ## Format
@@ -15,18 +17,23 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ## Types
 
-- `skills`: Add, update, or remove agent skills
+- `feat`: Feature additions or changes
+- `fix`: Bug fixes or corrections
+- `build`: Build tool configuration changes
+- `ai`: AI configuration changes (e.g. agent skills, prompts)
+- `ci`: CI configuration changes
 - `docs`: Add, update, or remove documentation
 - `style`: Code style changes only
 - `refactor`: Refactoring (restructuring headings, reordering lists, etc.)
-- `ci`: CI configuration changes
+- `perf`: Performance improvements
+- `test`: Test additions or modifications
 - `deps`: Dependency updates
 - `chore`: Miscellaneous changes
 
 ## Examples
 
 ```txt
-skills: Add quick-review skill
+feat: Add quick-review skill
 ```
 
 ```txt

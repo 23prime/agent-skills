@@ -40,7 +40,7 @@ If the changes are cohesive and belong in a single commit, proceed directly.
 
 ### 4. Compose a commit message
 
-Read `references/commit-rules.md` for the project's commit message conventions, then draft a message accordingly.
+Look for the repository's own commit message conventions first — e.g. `docs/CONTRIBUTING.md`, `CONTRIBUTING.md`, a `commitlint` config, or an explicit convention in `CLAUDE.md`/`AGENTS.md`. Follow those rules if found. Only when the repository defines none of its own, fall back to `references/commit-rules.md`.
 
 Key rules:
 
@@ -89,4 +89,4 @@ After the commit completes, run `git status` to verify success and report the re
 
 ## References
 
-- `references/commit-rules.md` — commit message format and type definitions
+- `references/commit-rules.md` — fallback commit message format and type definitions, used only when the repository defines no conventions of its own
