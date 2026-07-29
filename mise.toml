@@ -79,4 +79,7 @@ description = "Create a symbolic link to your each Claude directory."
 usage = '''
 arg "<claude_home>" help="Path to your Claude home directory." default="~/.claude"
 '''
-run = ["ln -sfn $(pwd)/skills ${usage_claude_home}/skills"]
+run = [
+  "ln -sfn $(pwd)/skills ${usage_claude_home}/skills",
+  "ln -sfn $(pwd)/agents ${usage_claude_home}/agents",
+]

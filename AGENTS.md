@@ -47,6 +47,16 @@ be exposed on `$PATH` rather than called via
 prefix) and reference it that way in `SKILL.md`. Use the
 `linking-skill-scripts` skill to place the symlink.
 
+## Agent Structure
+
+Custom subagents live under `agents/<name>.md` — one flat markdown file per
+agent (no per-agent subdirectory), matching Claude Code's own subagent
+layout (`~/.claude/agents/*.md`). Frontmatter fields (`name`, `description`,
+`model`, `effort`, `color`, `skills`, `tools`) follow Claude Code's subagent
+spec. Prefer the `skills:` frontmatter field to preload an existing skill's
+content into an agent rather than duplicating its workflow inline, so the
+agent stays in sync when the skill changes.
+
 ## Common Commands
 
 - **Markdown lint check**: `mise run md-check`
