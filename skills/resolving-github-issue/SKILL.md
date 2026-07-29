@@ -8,16 +8,13 @@ description: Use when the user wants to work through a GitHub Issue end-to-end, 
 Orchestrate the full lifecycle of a GitHub Issue: clarify → plan → implement → review → merge.
 Each step delegates to a dedicated skill; this skill defines the order and decision points.
 
-> **Tip:** Step 1 (refine) benefits from a more capable model than the rest of this workflow needs.
-> If the current model isn't the most capable available, suggest the user run step 1 on a more
-> capable model first, then `/clear` and resume this skill from step 2 on a more moderate model —
-> the refined Issue body carries the context forward, so nothing is lost.
-
 ## Workflow
 
 ### 1. Refine the Issue
 
-Invoke `refining-github-issue` with the Issue number or URL.
+1. Dispatch the `issue-refiner` agent (foreground, `run_in_background: false`) with the Issue number or URL, to run the interview at higher reasoning effort than the rest of this workflow needs. Subagent dispatch is a hard context boundary — it starts cold and only its final report comes back — so relay every turn of its interview: forward its questions to the user verbatim, and send the user's answers back to the same agent via `SendMessage`, until it finishes updating the Issue.
+2. Invoke `refining-github-issue` directly on the main thread afterward. Its own step 2 (already-refined Issues skip redundant questions) makes this a cheap re-check: it re-reads the now-updated Issue with fresh eyes and asks the user directly about anything still unclear that the relay in step 1 may have lost or that only becomes obvious on a second read.
+
 Clarify intent, scope, and acceptance criteria before any code is written.
 
 ### 2. Decide whether to decompose
@@ -90,7 +87,7 @@ Invoke `finishing-pull-request` to merge the PR and clean up the topic branch.
 
 | Step | Skill |
 | ---- | ----- |
-| 1 | `refining-github-issue` |
+| 1 | `issue-refiner` (agent), then `refining-github-issue` |
 | 2 | `decomposing-github-issue` |
 | 3 | `creating-branch` |
 | 5 | `review-and-fix` |
