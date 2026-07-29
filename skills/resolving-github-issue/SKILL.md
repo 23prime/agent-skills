@@ -13,7 +13,7 @@ Each step delegates to a dedicated skill; this skill defines the order and decis
 ### 1. Refine the Issue
 
 1. Dispatch the `issue-refiner` agent (foreground, `run_in_background: false`) with the Issue number or URL, to run the interview at higher reasoning effort than the rest of this workflow needs. Subagent dispatch is a hard context boundary — it starts cold and only its final report comes back — so relay every turn of its interview: forward its questions to the user verbatim, and send the user's answers back to the same agent via `SendMessage`, until it finishes updating the Issue.
-2. Invoke `refining-github-issue` directly on the main thread afterward. Its own step 2 (already-refined Issues skip redundant questions) makes this a cheap re-check: it re-reads the now-updated Issue with fresh eyes and asks the user directly about anything still unclear that the relay in step 1 may have lost or that only becomes obvious on a second read.
+2. Dispatch the `issue-reviewer` agent (foreground) with only the Issue number or URL — no summary of the step 1 discussion. Because you relayed every turn in step 1 yourself, your own re-read is not actually fresh eyes; a cold subagent with zero prior context is. If it reports open questions, ask the user directly and update the Issue; if it finds nothing, proceed.
 
 Clarify intent, scope, and acceptance criteria before any code is written.
 
@@ -87,7 +87,7 @@ Invoke `finishing-pull-request` to merge the PR and clean up the topic branch.
 
 | Step | Skill |
 | ---- | ----- |
-| 1 | `issue-refiner` (agent), then `refining-github-issue` |
+| 1 | `issue-refiner` (agent), then `issue-reviewer` (agent) |
 | 2 | `decomposing-github-issue` |
 | 3 | `creating-branch` |
 | 5 | `review-and-fix` |
