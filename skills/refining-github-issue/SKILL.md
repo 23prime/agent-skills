@@ -30,7 +30,7 @@ Read the fetched Issue body **and comments** and identify unclear or ambiguous p
 
 - **Purpose**: Why is this Issue needed?
 - **Scope**: What is in scope and what is explicitly out of scope?
-- **Acceptance criteria**: What is the definition of done?
+- **Acceptance criteria**: What is the definition of done? For user-facing changes, confirm whether the user can verify the result themselves via a browser or real device, or whether verification will rely on tests/code review alone.
 - **Constraints and assumptions**: Are there technical or business constraints?
 - **Priority and urgency**: How time-sensitive is this?
 - **Hidden scope**: Are there changes the Issue doesn't mention but that the stated change still requires — CI/workflow configs, other config files, adjacent test types (e.g. E2E alongside unit tests), or docs? List candidates and confirm with the user rather than assuming they're out of scope.
@@ -51,6 +51,7 @@ Example questions:
 - "Does the definition of done for this Issue include X?"
 - "X may conflict with the existing Y — how should this be handled?"
 - "Is this a user-facing change or internal implementation only?"
+- "Can you verify this yourself in a browser or on a real device, or should verification rely on tests/code review only?"
 
 ### 4. Update the Issue
 
