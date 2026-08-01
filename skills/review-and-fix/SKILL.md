@@ -23,11 +23,11 @@ Then scan the collected diff for renames (`rename from` / `rename to`, usually w
 
 ### 2. Review the diff
 
-First, decide which review dimensions the diff needs. Default to running all five; drop a dimension only when the diff clearly cannot exhibit that failure mode:
+First, decide which review dimensions the diff needs. Default to running all six; drop a dimension only when the diff clearly cannot exhibit that failure mode:
 
 - Drop dimensions 1 (bugs and logic errors) and 2 (unintended behavior changes) when the diff touches no executable code — e.g. it only changes Markdown, comments, or static assets.
 - Drop dimension 3 (security concerns) when the diff touches no code path that handles input, secrets, auth, network access, file access, or external processes — e.g. docs-only or comment-only changes.
-- Always keep dimension 4 (obvious improvements) and dimension 5 (missed related updates); both apply to docs and config, not just code.
+- Always keep dimension 4 (obvious improvements), dimension 5 (missed related updates), and dimension 6 (design balance); all three apply to docs and config, not just code.
 - If the diff mixes code and docs, touches multiple areas, or you're not sure a dimension is irrelevant, keep it — the cost of an extra subagent is far lower than the cost of a missed bug.
 
 Then run the following concurrently:
@@ -38,6 +38,7 @@ Then run the following concurrently:
   3. **Security concerns** — Scan the diff for hardcoded secrets, injection vulnerabilities, missing input validation at system boundaries.
   4. **Obvious improvements** — Scan the diff for dead code introduced in the diff, clearly redundant operations.
   5. **Missed related updates** — Identify what the diff changes (interfaces, flags, config keys, behavior, file/directory layout) and check whether every place in the repo that depends on it was updated too: README and other docs, GitHub Actions workflows (`.github/workflows/`), other CI config, scripts, and cross-references in other skills or files. Grep the repo for the old name/value/path being changed to find anything left stale. Also check the reverse direction: if the diff removes the last usage of a dependency, import, helper, or config entry, confirm it was removed too rather than left as dead weight (e.g. a package.json/go.mod entry, an import statement, an unused env var).
+  6. **Design balance** — Check whether the diff optimizes its immediate spot at the expense of the surrounding design. Read the changed files' surrounding code and any similar existing implementations in the repo (other modules, sibling functions, prior art for the same pattern) before judging — this dimension needs that context and, unlike 1-5, is not limited to the diff text. Flag: inconsistency with established patterns elsewhere in the codebase, duplicated logic that an existing shared abstraction already covers (or vice versa, a new abstraction introduced for a single call site), and structural choices that fix the local case while leaving the same problem unaddressed in comparable code nearby.
 
   Append to dimensions 1-4's prompts: "Do not comment on style, formatting, naming, or documentation unless it directly causes a bug." Append to all surviving dimensions' prompts: "Return findings as a list grouped by file. For each finding, state the file and approximate line, describe the issue in one sentence, and suggest a fix if it is straightforward. If no issues are found, say so briefly."
 
@@ -48,14 +49,15 @@ Then run the following concurrently:
 
 ### 3. Consolidate findings
 
-Merge the five subagents' findings with CodeRabbit's findings into a single list, grouped by underlying issue rather than by source — the same root cause is often reported by more than one source with different wording, so match by file/line/mechanism, not literal text.
+Merge the subagents' findings with CodeRabbit's findings into a single list, grouped by underlying issue rather than by source — the same root cause is often reported by more than one source with different wording, so match by file/line/mechanism, not literal text.
 
 Critically evaluate every finding before accepting it, regardless of source:
 
 - Verify it against the actual diff and surrounding code; do not take a finding at face value.
 - Discard suggestions that are purely stylistic preferences, false positives, or don't hold up under verification.
 - Discard findings that land on unchanged lines of a renamed-but-unchanged file from step 1 — CodeRabbit reports these every pass, so they will reappear on each re-review. Mention them once in the step 6 report as pre-existing and out of scope, rather than fixing them silently.
-- Keep only actionable issues: bugs, logic errors, security concerns, and genuine convention violations backed by evidence.
+- For dimension 6 findings specifically, discard suggestions that would only apply if the surrounding code were also refactored — this workflow fixes the diff in place without expanding scope into unrelated pre-existing code; keep only findings that are fixable within the diff's own footprint (e.g. aligning the new code with an existing shared pattern it should have used).
+- Keep only actionable issues: bugs, logic errors, security concerns, missed related updates, design-balance problems, and genuine convention violations backed by evidence.
 
 ### 4. Fix each issue
 
@@ -63,7 +65,7 @@ For each surviving actionable issue, apply the fix directly in the working tree.
 
 ### 5. Re-review
 
-Repeat steps 2-4 (rerun both the subagent review and CodeRabbit, with the same scope as step 2) until a full pass finds no further actionable issues. Re-derive which dimensions apply each time, since fixes may have touched code that the original diff didn't. When re-running the subagent review, dimension 5 should focus on whether the fixes from this pass introduced any new missed-update gaps.
+Repeat steps 2-4 (rerun both the subagent review and CodeRabbit, with the same scope as step 2) until a full pass finds no further actionable issues. Re-derive which dimensions apply each time, since fixes may have touched code that the original diff didn't. When re-running the subagent review, dimension 5 should focus on whether the fixes from this pass introduced any new missed-update gaps, and dimension 6 should focus on whether this pass's fixes introduced any new design inconsistency rather than re-litigating the original diff's design.
 
 ### 6. Report
 
