@@ -44,6 +44,8 @@ Interview the user relentlessly about every unclear point identified in step 2, 
 - Work through the unclear points from step 2 one by one. Do not jump to Output Format while points remain unresolved, unless the user explicitly says to move on.
 - If a question can be answered by exploring the codebase, explore it instead of asking.
 - Where you have a reasonable default, propose it and ask the user to confirm or override, rather than asking an open-ended question.
+- Don't ask about a point at all when it's already near-self-evident — e.g. one option has a clearly strong advantage, the answer follows from consistency with existing design/implementation in the repo, or an established industry-standard convention settles it. Decide it yourself, state the decision and its one-line rationale in the Output Format instead, and move on without waiting for confirmation. Reserve actual questions for points with a genuine tradeoff.
+- For UI/visual/UX details (exact spacing, wording nuance, layout tweaks, interaction feel), don't press the user to judge from a text description alone — that's unreliable without seeing it rendered. Propose a reasonable default, note in the Output Format that it's pending visual confirmation, and defer the final call to post-implementation verification (browser or real device) rather than resolving it here through more questions.
 
 Example questions:
 
