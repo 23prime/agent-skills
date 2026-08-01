@@ -51,6 +51,8 @@ git push -u origin HEAD
 **タイトル**：変更内容を要約した 1 文（70 文字以内）。
 プロジェクトが conventional commits を使用している場合は、タイプのプレフィックスを付ける（`feat:`、`fix:`、`chore:` など）。
 
+**クローズキーワード**：この PR が GitHub Issue を解決する場合、本文にクローズキーワード（`Closes #<N>`、`Fixes #<N>`、`Resolves #<N>`）を含め、PR のマージで Issue が自動クローズされるようにする。Issue 番号は、ブランチ名（例：`feature/42-add-oauth-login` → `#42`）や、会話の中ですでに確立している文脈（この PR の作業のスコープ元となった Issue など）から判断する。根拠なく Issue 番号を推測しない。
+
 **本文**：まず PR テンプレートを確認する：
 
 ```bash
@@ -68,12 +70,16 @@ cat .github/pull_request_template.md 2>/dev/null || cat .github/PULL_REQUEST_TEM
 
 ## Summary
 
+Closes #<N>
+
 ## Reason for change
 
 ## Changes
 
 ## Notes
 ```
+
+`Closes #<N>` の行は、該当する Issue がない場合は空欄にせず行ごと削除する。このフォールバックではなくリポジトリ独自の PR テンプレートを使う場合は、テンプレートの `## Summary` 相当のセクションの先頭付近（またはテンプレート自身が Issue 参照を書く場所）にクローズキーワードを追加する。省略しない。
 
 ### Step 4: PR の作成
 

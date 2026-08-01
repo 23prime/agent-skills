@@ -51,6 +51,13 @@ git push -u origin HEAD
 Prefix with a type if the project uses conventional commits (`feat:`,
 `fix:`, `chore:`, etc.).
 
+**Closing keyword**: If this PR resolves a GitHub Issue, include a closing
+keyword (`Closes #<N>`, `Fixes #<N>`, or `Resolves #<N>`) in the body so
+merging the PR auto-closes the Issue. Determine the Issue number from the
+branch name (e.g. `feature/42-add-oauth-login` → `#42`) or from context
+already established earlier in the conversation (e.g. the Issue this PR's
+work was scoped from). Do not guess an Issue number with no such evidence.
+
 **Body**: Check for a PR template first:
 
 ```bash
@@ -69,12 +76,16 @@ cat .github/pull_request_template.md 2>/dev/null || cat .github/PULL_REQUEST_TEM
 
 ## Summary
 
+Closes #<N>
+
 ## Reason for change
 
 ## Changes
 
 ## Notes
 ```
+
+Omit the `Closes #<N>` line entirely (not just leave it blank) when no Issue applies. When a repo's own PR template is used instead of this fallback, add the closing keyword as its own line near the top of the `## Summary`-equivalent section (or wherever the template's own conventions put issue references) rather than skipping it.
 
 ### Step 4: Create the PR
 
