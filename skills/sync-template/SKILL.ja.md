@@ -10,46 +10,39 @@ translated_from: SKILL.md
 
 ## ワークフロー
 
-### 1. 同期対象の読み込み
+### 1. 同期対象の確認
 
-`skills/sync-template/sync_targets.txt` からリポジトリ名の一覧を読み込む（1行1件、`#` コメントと空行は無視）。
+`skills/sync-template/sync_targets.txt` が存在することを確認する。
 
-`sync_targets.txt` が存在しない場合は、`skills/sync-template/sync_targets.example.txt` を `skills/sync-template/sync_targets.txt` にコピーして編集するようユーザーに伝え、処理を停止する。
+存在しない場合は、`skills/sync-template/sync_targets.example.txt` を `skills/sync-template/sync_targets.txt` にコピーして編集するようユーザーに伝え、処理を停止する。
 
-### 2. 各リポジトリの同期実行
+### 2. sync-all スクリプトの実行
 
-リポジトリ名ごとに同期スクリプトを実行する：
-
-```bash
-./skills/sync-template/scripts/sync-upstream.sh ~/develop/<repo-name>
-```
-
-出力の混在や git 操作の競合を避けるため、**逐次実行**する（並列不可）。
-
-grep 等にパイプすると終了コードが失われるため、出力と終了コードは以下のように取得する：
+同梱のラッパースクリプトを**一度だけ**実行する。ループ処理はスクリプト内部で行われる：
 
 ```bash
-output=$(./skills/sync-template/scripts/sync-upstream.sh ~/develop/<repo-name> 2>&1)
-exit_code=$?
+./skills/sync-template/scripts/sync-all.sh ./skills/sync-template/sync_targets.txt
 ```
+
+スクリプトは進捗を stderr にストリーミングし、標準出力にタブ区切りの `<repo>\t<OK|FAILED>\t<notes>` 行を含む `---RESULTS---` ブロックを出力する。
 
 ### 3. 結果の報告
 
-全リポジトリの処理が完了したら、サマリーテーブルを報告する：
+`---RESULTS---` ブロックを解析し、サマリーテーブルを報告する：
 
-| Repository | Result      | Notes                          |
-|------------|-------------|--------------------------------|
-| repo-name  | OK / FAILED | 失敗時はエラーメッセージを記載 |
+| Repository | Result      | Notes                    |
+|------------|-------------|--------------------------|
+| repo-name  | OK / FAILED | error message if failed  |
 
-失敗したリポジトリには、エラー出力をもとに推奨アクションを付記する：
+失敗したリポジトリには、以下を参考に推奨アクションを付記する：
 
-- マージコンフリクト → 「`~/develop/<repo>` で手動解消してから push する」。
-- 認証/SSH エラー → 「リモートへの SSH キーのアクセスを確認する」。
-- 履歴の乖離 → 「`git log` を確認し、`git reset` または手動 rebase を検討する」。
-- その他 → 出力の最終エラー行を引用する。
+- マージコンフリクト → 「`~/develop/<repo>` で手動解消してから push する」
+- 認証/SSH エラー → 「リモートへの SSH キーのアクセスを確認する」
+- 履歴の乖離 → 「`git log` を確認し、`git reset` または手動 rebase を検討する」
+- pre-push hook のツール不足 → 「不足しているツールをインストールするか、利用可能な環境で同期を実行する」
+- その他 → 出力の notes フィールドを引用する
 
 ## 補足
 
-- `scripts/sync-upstream.sh` は `upstream/main` から pull してマージし、`mise.toml` が存在する場合は `mise run setup` を実行して更新されたツールをインストールしてから `origin/main` に push する。その後 `sync-upstream-*` ブランチをローカル・リモート両方から削除し、`git fetch --prune` を実行する。
-- スクリプトが非ゼロの終了コードを返した場合はそのリポジトリを失敗とし、次へ進む。
-- 失敗してもループを中断しない。
+- `scripts/sync-upstream.sh` は `upstream/main` から pull してマージし、`mise.toml` が存在する場合は `mise run setup` を実行して更新されたツールをインストールしてから `origin/main` に push する。その後 `sync-upstream-*` ブランチをローカル・リモート両方から削除し、`git fetch --prune` を実行する
+- `scripts/sync-all.sh` は git 操作の競合を避けるためリポジトリを逐次実行し、失敗してもループを中断しない
