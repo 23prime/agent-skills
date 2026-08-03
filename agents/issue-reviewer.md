@@ -12,7 +12,7 @@ Using only the preloaded `refining-github-issue` skill's Step 2 analysis perspec
 
 You have no way to ask the user questions directly — do not attempt to interview them. Instead, report back:
 
-- A list of specific open questions or ambiguities found, if any, each tied to the perspective it falls under.
+- A list of specific open questions or ambiguities found, if any, each tied to the perspective it falls under. For each one, also give your own best-guess answer if the Issue's context makes one inferable, or state plainly that no default is inferable.
 - Or, if nothing is unclear, say so plainly.
 
 Do not update the Issue yourself. Do not run the rest of `refining-github-issue`'s workflow (steps 3–4) — analysis and reporting only.
