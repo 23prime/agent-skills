@@ -42,6 +42,21 @@ translated_from: SKILL.md
 - pre-push hook のツール不足 → 「不足しているツールをインストールするか、利用可能な環境で同期を実行する」
 - その他 → 出力の notes フィールドを引用する
 
+### 4. 古い "Merge upstream changes" PR のクローズ
+
+ステップ3で `OK` と報告されたリポジトリについて、"Merge upstream changes" というタイトルのオープンな GitHub PR がないか確認し、あればクローズする。同期処理で直接マージ・push 済みのため不要になっているからだ：
+
+```bash
+cd ~/develop/<repo>
+gh pr list --state open --search "Merge upstream changes in:title" --json number --jq '.[].number'
+```
+
+返された各 PR 番号をクローズする：
+
+```bash
+gh pr close <number>
+```
+
 ## 補足
 
 - `scripts/sync-upstream.sh` は `upstream/main` から pull してマージし、`mise.toml` が存在する場合は `mise run setup` を実行して更新されたツールをインストールしてから `origin/main` に push する。その後 `sync-upstream-*` ブランチをローカル・リモート両方から削除し、`git fetch --prune` を実行する

@@ -41,6 +41,21 @@ For each failed repo, add a recommended action:
 - pre-push hook tool missing → "Install the missing tool or run sync in an environment where it is available"
 - Other → quote the notes field from the output
 
+### 4. Close stale "Merge upstream changes" PRs
+
+For each repo where step 3 reported `OK`, check for an open GitHub PR titled "Merge upstream changes" and close it, since the sync already merged and pushed those changes directly:
+
+```bash
+cd ~/develop/<repo>
+gh pr list --state open --search "Merge upstream changes in:title" --json number --jq '.[].number'
+```
+
+For each PR number returned, close it:
+
+```bash
+gh pr close <number>
+```
+
 ## Notes
 
 - `scripts/sync-upstream.sh` pulls from `upstream/main`, merges, runs `mise run setup` (if `mise.toml` exists) to install any updated tools, pushes to `origin/main`, deletes `sync-upstream-*` branches (local and remote), and runs `git fetch --prune`
