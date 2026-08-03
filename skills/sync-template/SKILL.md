@@ -43,20 +43,18 @@ For each failed repo, add a recommended action:
 
 ### 4. Close stale "Merge upstream changes" PRs
 
-For each repo where step 3 reported `OK`, check for an open GitHub PR titled "Merge upstream changes" and close it, since the sync already merged and pushed those changes directly:
+Collect the repos where step 3 reported `OK`, then run the bundled script **once** with those repo names as arguments — it handles the loop internally:
 
 ```bash
-cd ~/develop/<repo>
-gh pr list --state open --search "Merge upstream changes in:title" --json number --jq '.[].number'
+./skills/sync-template/scripts/close-merge-upstream-prs.sh <repo-name> [<repo-name> ...]
 ```
 
-For each PR number returned, close it:
+For each repo, the script looks for an open GitHub PR titled "Merge upstream changes" and closes it, since the sync already merged and pushed those changes directly. It streams progress to stderr and prints a `---RESULTS---` block to stdout with tab-separated lines: `<repo>\t<CLOSED|NONE>\t<pr-numbers>`.
 
-```bash
-gh pr close <number>
-```
+Report which PRs were closed per repo.
 
 ## Notes
 
 - `scripts/sync-upstream.sh` pulls from `upstream/main`, merges, runs `mise run setup` (if `mise.toml` exists) to install any updated tools, pushes to `origin/main`, deletes `sync-upstream-*` branches (local and remote), and runs `git fetch --prune`
 - `scripts/sync-all.sh` runs repos sequentially to avoid conflicting git operations and never aborts on failure
+- `scripts/close-merge-upstream-prs.sh` takes repo names as arguments and closes each repo's open "Merge upstream changes" PR, if any

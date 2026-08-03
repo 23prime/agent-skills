@@ -44,20 +44,18 @@ translated_from: SKILL.md
 
 ### 4. 古い "Merge upstream changes" PR のクローズ
 
-ステップ3で `OK` と報告されたリポジトリについて、"Merge upstream changes" というタイトルのオープンな GitHub PR がないか確認し、あればクローズする。同期処理で直接マージ・push 済みのため不要になっているからだ：
+ステップ3で `OK` と報告されたリポジトリ名を集め、同梱のスクリプトを**一度だけ**実行する。ループ処理はスクリプト内部で行われる：
 
 ```bash
-cd ~/develop/<repo>
-gh pr list --state open --search "Merge upstream changes in:title" --json number --jq '.[].number'
+./skills/sync-template/scripts/close-merge-upstream-prs.sh <repo-name> [<repo-name> ...]
 ```
 
-返された各 PR 番号をクローズする：
+各リポジトリについて、"Merge upstream changes" というタイトルのオープンな GitHub PR がないか確認し、あればクローズする。同期処理で直接マージ・push 済みのため不要になっているからだ。スクリプトは進捗を stderr にストリーミングし、標準出力にタブ区切りの `<repo>\t<CLOSED|NONE>\t<pr-numbers>` 行を含む `---RESULTS---` ブロックを出力する。
 
-```bash
-gh pr close <number>
-```
+リポジトリごとにクローズした PR を報告する。
 
 ## 補足
 
 - `scripts/sync-upstream.sh` は `upstream/main` から pull してマージし、`mise.toml` が存在する場合は `mise run setup` を実行して更新されたツールをインストールしてから `origin/main` に push する。その後 `sync-upstream-*` ブランチをローカル・リモート両方から削除し、`git fetch --prune` を実行する
 - `scripts/sync-all.sh` は git 操作の競合を避けるためリポジトリを逐次実行し、失敗してもループを中断しない
+- `scripts/close-merge-upstream-prs.sh` はリポジトリ名を引数に取り、各リポジトリのオープンな "Merge upstream changes" PR があればクローズする
