@@ -215,12 +215,29 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   as-poll-until-approved <PR_NUMBER> <OWNER/REPO>
   ```
 
-  The script polls every 1 minute for up to 4 hours. On timeout, it posts
-  a single `` `@coderabbitai` resolve `` comment before exiting. Exit codes:
+  The script polls every 1 minute for up to 4 hours. Exit codes:
 
   - `0` — PR approved; this skill is done
   - `1` — Timed out after 4 hours; report to the user and stop
-  - `2` — New unresolved comments found; restart from Step 1
+  - `2` — New unresolved comments found (never replied to); restart from Step 1
+  - `3` — A thread we already replied to has stayed unresolved for 5+
+    minutes (e.g. CodeRabbit didn't auto-resolve after our reply). Handle
+    per below instead of restarting or waiting blindly.
+
+  **On exit `3`:** the script prints the stuck threads (`thread_id`, `path`,
+  `line`, and the latest reply's author/body). Present this to the user —
+  including the latest reply content, since it may contain a new CodeRabbit
+  suggestion — and propose next steps:
+
+  - If the latest reply is just CodeRabbit acknowledging without resolving,
+    propose running the `resolving-pr-conversations` skill for this PR with
+    scope `[2]` (all reviewers) — our earlier reply already states the fix,
+    so it will auto-resolve under that skill's rules.
+  - If the latest reply raises a new, substantive point, treat it like a new
+    review comment and restart from Step 1 instead.
+
+  Wait for the user's decision before acting. After resolving (or restarting
+  and re-reaching this step), resume polling with `as-poll-until-approved`.
 
 ## Notes
 
