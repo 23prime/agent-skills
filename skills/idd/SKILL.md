@@ -1,9 +1,9 @@
 ---
-name: resolving-github-issue
+name: idd
 description: Use when the user wants to work through a GitHub Issue end-to-end, from clarifying requirements to getting the PR merged.
 ---
 
-# Resolving a GitHub Issue
+# Issue Driven Development
 
 Orchestrate the full lifecycle of a GitHub Issue: clarify → plan → implement → review → merge.
 Each step delegates to a dedicated skill; this skill defines the order and decision points.

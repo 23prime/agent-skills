@@ -63,7 +63,7 @@ translated_from: SKILL.md
 - **auto-memory の項目** — 直接書き込む。この環境の既存の auto-memory 形式（メモリディレクトリ配下の frontmatter 付き Markdown ファイル、および `MEMORY.md` への一行の追記）に従う。その形式が定義する `type` 分類（user/feedback/project/reference）をそのまま使う。新規作成の前に、更新すべき既存のメモリファイルがないか確認する。
 - **SKILL.md の項目** — `writing-skills` スキルを呼び出し、対象スキル名と修正案を渡す。
 
-何もコミットしない。すべてのファイル変更（CLAUDE.md、AGENTS.md、`.claude/rules/*.md`、SKILL.md ファイル）はワーキングツリーに未コミットのまま残す――コミットは呼び出し元（例：`resolving-github-issue`）の責任とする。auto-memory への書き込みはリポジトリ外なのでコミット不要。
+何もコミットしない。すべてのファイル変更（CLAUDE.md、AGENTS.md、`.claude/rules/*.md`、SKILL.md ファイル）はワーキングツリーに未コミットのまま残す――コミットは呼び出し元（例：`idd`）の責任とする。auto-memory への書き込みはリポジトリ外なのでコミット不要。
 
 ### 5. 報告する
 

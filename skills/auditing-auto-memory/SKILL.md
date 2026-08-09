@@ -74,7 +74,7 @@ Checked N files, M flagged.
    Proposed: ask user for current status, update or delete.
 
 2. project_resolving_issue_model_split.md — superseded
-   Now documented in skills/resolving-github-issue/SKILL.md.
+   Now documented in skills/idd/SKILL.md.
    Proposed: delete.
 
 Apply all? Reply with adjustments (keep an item, edit the action, override

@@ -1,10 +1,10 @@
 ---
-name: resolving-github-issue
+name: idd
 description: GitHub Issue を要件確認から PR マージまで一気通貫で進めたいときに使用する。
 translated_from: SKILL.md
 ---
 
-# GitHub Issue の解決
+# イシュー駆動開発
 
 GitHub Issue のライフサイクル全体をオーケストレーションする：明確化 → 計画 → 実装 → レビュー → マージ。
 各ステップは専用スキルに委譲し、このスキルは順序と判断ポイントを定義する。
