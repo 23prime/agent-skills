@@ -1,15 +1,20 @@
 ---
 name: review-and-fix
-description: Review uncommitted changes, or a whole branch against its base, with parallel subagents and the CodeRabbit CLI, then fix each actionable issue in place, looping until clean, without committing. Use when a user wants to review and clean up their working tree changes before committing, or review a branch's full diff before opening a PR.
+description: Review uncommitted changes, or a whole branch against its base, with parallel subagents and the CodeRabbit CLI, then fix each actionable issue in place, looping until clean, without committing. Supports a full depth (default) and a lighter depth for a quick per-commit check within a larger multi-commit change. Use when a user wants to review and clean up their working tree changes before committing, or review a branch's full diff before opening a PR.
 ---
 
 # Review and Fix
 
 ## Workflow
 
-### 1. Collect the diff
+### 1. Determine depth and scope
 
-Determine the review scope:
+**Depth:**
+
+- **Full (default)**: all six review dimensions are in play (subject to the drop rules in step 2), and CodeRabbit runs.
+- **Light** (invoke explicitly — e.g. when reviewing one commit-sized unit within a larger multi-commit change, where a full review of the complete diff will follow later): only dimensions 1-3 (bugs and logic errors, unintended behavior changes, security concerns) are in play; skip CodeRabbit entirely. Dimensions 4-6 (obvious improvements, missed related updates, design balance) need whole-diff or cross-file context a single small unit doesn't have — leave them to the full review that covers the complete change.
+
+**Scope:**
 
 - **Uncommitted (default)**: capture all changes not yet committed, including untracked files.
   1. `git diff HEAD` — staged and unstaged changes to tracked files
@@ -23,11 +28,11 @@ Then scan the collected diff for renames (`rename from` / `rename to`, usually w
 
 ### 2. Review the diff
 
-First, decide which review dimensions the diff needs. Default to running all six; drop a dimension only when the diff clearly cannot exhibit that failure mode:
+First, decide which review dimensions the diff needs. In light depth, only dimensions 1-3 are ever in play, per step 1. In full depth, default to running all six; drop a dimension only when the diff clearly cannot exhibit that failure mode:
 
 - Drop dimensions 1 (bugs and logic errors) and 2 (unintended behavior changes) when the diff touches no executable code — e.g. it only changes Markdown, comments, or static assets.
 - Drop dimension 3 (security concerns) when the diff touches no code path that handles input, secrets, auth, network access, file access, or external processes — e.g. docs-only or comment-only changes.
-- Always keep dimension 4 (obvious improvements), dimension 5 (missed related updates), and dimension 6 (design balance); all three apply to docs and config, not just code.
+- In full depth, always keep dimension 4 (obvious improvements), dimension 5 (missed related updates), and dimension 6 (design balance); all three apply to docs and config, not just code.
 - If the diff mixes code and docs, touches multiple areas, or you're not sure a dimension is irrelevant, keep it — the cost of an extra subagent is far lower than the cost of a missed bug.
 
 Then run the following concurrently:
@@ -43,7 +48,7 @@ Then run the following concurrently:
   Append to dimensions 1-4's prompts: "Do not comment on style, formatting, naming, or documentation unless it directly causes a bug." Append to all surviving dimensions' prompts: "Return findings as a list grouped by file. For each finding, state the file and approximate line, describe the issue in one sentence, and suggest a fix if it is straightforward. If no issues are found, say so briefly."
 
   When step 1 found renamed-but-unchanged files, add to every dimension's prompt: "These files are renamed only, with content unchanged: `<list>`. Their pre-existing content is out of scope — do not report issues in it. Do report anything that depends on their old path." Dimension 5 still checks the renames themselves for stale references.
-- Run CodeRabbit with a scope matching step 1, so its findings cover the same range as the subagents': `coderabbit review --agent --type uncommitted` in uncommitted mode, or `coderabbit review --agent --base <base-branch>` in branch mode. If CodeRabbit reports a rate limit, retry after the wait time it reports. If it still reports a rate limit after 3 retries, proceed using only the subagents' findings for this pass and note in the report that CodeRabbit was skipped due to rate limiting — do not block the workflow on it indefinitely.
+- **Skip this entirely in light depth.** In full depth, run CodeRabbit with a scope matching step 1, so its findings cover the same range as the subagents': `coderabbit review --agent --type uncommitted` in uncommitted mode, or `coderabbit review --agent --base <base-branch>` in branch mode. If CodeRabbit reports a rate limit, retry after the wait time it reports. If it still reports a rate limit after 3 retries, proceed using only the subagents' findings for this pass and note in the report that CodeRabbit was skipped due to rate limiting — do not block the workflow on it indefinitely.
 
   `--type uncommitted` only sees tracked changes (`git diff HEAD`); it does not see untracked (never-`git add`-ed) new files, even though step 1 includes them in the subagents' review target. New files are therefore covered only by the subagent dimensions, not by CodeRabbit — do not expect or wait for CodeRabbit findings on them. This blind spot can also produce false positives about repo state (e.g. claiming a file or package "doesn't exist" when it does, just untracked); before accepting such a finding, check `git status` for the path in question.
 
@@ -65,8 +70,8 @@ For each surviving actionable issue, apply the fix directly in the working tree.
 
 ### 5. Re-review
 
-Repeat steps 2-4 (rerun both the subagent review and CodeRabbit, with the same scope as step 2) until a full pass finds no further actionable issues. Re-derive which dimensions apply each time, since fixes may have touched code that the original diff didn't. When re-running the subagent review, dimension 5 should focus on whether the fixes from this pass introduced any new missed-update gaps, and dimension 6 should focus on whether this pass's fixes introduced any new design inconsistency rather than re-litigating the original diff's design.
+Repeat steps 2-4 (rerun the subagent review, and in full depth CodeRabbit too, with the same depth and scope as step 1) until a pass finds no further actionable issues. Re-derive which dimensions apply each time, since fixes may have touched code that the original diff didn't. When re-running the subagent review, dimension 5 should focus on whether the fixes from this pass introduced any new missed-update gaps, and dimension 6 should focus on whether this pass's fixes introduced any new design inconsistency rather than re-litigating the original diff's design.
 
 ### 6. Report
 
-Summarize all fixes applied to the user. In branch mode, if a fix touches a line that was already part of an earlier commit on the branch (not just this pass's uncommitted changes), call that out explicitly, since it's easy to miss that already-committed code is being changed again. If no issues were found, say so briefly. Avoid filler or praise — the goal is speed and signal. Leave the fixes uncommitted; suggest the user review the result and commit when ready (e.g. with `committing-changes`).
+Summarize all fixes applied to the user. In branch mode, if a fix touches a line that was already part of an earlier commit on the branch (not just this pass's uncommitted changes), call that out explicitly, since it's easy to miss that already-committed code is being changed again. If no issues were found, say so briefly. Avoid filler or praise — the goal is speed and signal. In light depth, note that dimensions 4-6 and CodeRabbit were skipped and are still owed by a later full review. Leave the fixes uncommitted; suggest the user review the result and commit when ready (e.g. with `committing-changes`).
