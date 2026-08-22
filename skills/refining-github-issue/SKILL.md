@@ -10,7 +10,13 @@ The goal is to clarify the intent, scope, and acceptance criteria before startin
 
 ## Workflow
 
-### 1. Fetch the Issue
+### 1. Choose execution mode
+
+**Light (default)**: run the rest of this workflow inline, on the current thread and model.
+
+**Heavy** (use when the Issue is unusually ambiguous or high-stakes — ask the user if unclear): dispatch the `issue-refiner` agent (foreground) for the interview at higher reasoning effort, then the `issue-reviewer` agent (foreground) for a fresh-eyes second pass over the result. See each agent's own description for how to run it; this skill's steps 2–5 are what runs inside `issue-refiner` — do not also run them inline when using heavy mode.
+
+### 2. Fetch the Issue
 
 Accept an Issue number or URL as input and fetch it with the `gh` CLI.
 
@@ -24,7 +30,7 @@ gh issue view <url> --json number,title,body,labels,assignees,comments
 
 If no repository is specified, use the remote origin of the current directory.
 
-### 2. Analyze the Issue
+### 3. Analyze the Issue
 
 Read the fetched Issue body **and comments** and identify unclear or ambiguous points from the following perspectives:
 
@@ -36,12 +42,12 @@ Read the fetched Issue body **and comments** and identify unclear or ambiguous p
 
 If the Issue already has a clear purpose, explicit scope, and acceptance criteria (e.g., it was previously refined), skip to the Output Format and summarize what is already known. Do not ask redundant questions.
 
-### 3. Ask the user questions
+### 4. Ask the user questions
 
-Interview the user relentlessly about every unclear point identified in step 2, resolving each one before moving to the next. Do not stop at a vague or partial answer — ask a follow-up that drills into the specific ambiguity until it is resolved.
+Interview the user relentlessly about every unclear point identified in step 3, resolving each one before moving to the next. Do not stop at a vague or partial answer — ask a follow-up that drills into the specific ambiguity until it is resolved.
 
 - Ask **one question at a time**; never batch multiple questions into a single message.
-- Work through the unclear points from step 2 one by one. Do not jump to Output Format while points remain unresolved, unless the user explicitly says to move on.
+- Work through the unclear points from step 3 one by one. Do not jump to Output Format while points remain unresolved, unless the user explicitly says to move on.
 - If a question can be answered by exploring the codebase, explore it instead of asking.
 - Where you have a reasonable default, propose it and ask the user to confirm or override, rather than asking an open-ended question.
 - Don't ask about a point at all when it's already near-self-evident — e.g. one option has a clearly strong advantage, the answer follows from consistency with existing design/implementation in the repo, or an established industry-standard convention settles it. Decide it yourself, state the decision and its one-line rationale in the Output Format instead, and move on without waiting for confirmation. Reserve actual questions for points with a genuine tradeoff.
@@ -54,7 +60,7 @@ Example questions:
 - "Is this a user-facing change or internal implementation only?"
 - "Can you verify this yourself in a browser or on a real device, or should verification rely on tests/code review only?"
 
-### 4. Update the Issue
+### 5. Update the Issue
 
 Propose writing the refined content back to the Issue. Show it as a diff
 against the current body and confirm before writing:

@@ -12,21 +12,7 @@ Each step delegates to a dedicated skill; this skill defines the order and decis
 
 ### 1. Refine the Issue
 
-1. Fetch the Issue yourself first (`gh issue view <number> --json number,title,body,labels,assignees,comments`) so you have independent context for the matching check below. Dispatch the `issue-refiner` agent (foreground, `run_in_background: false`) with the Issue number or URL, to run the interview at higher reasoning effort than the rest of this workflow needs. Subagent dispatch is a hard context boundary — it starts cold and only its final report comes back — so relay every turn of its interview, with one exception:
-
-   When its question includes a proposed default (per `refining-github-issue`'s step 3 guidance to propose one when reasonable), form your own independent guess by reading the Issue yourself, before reading the agent's proposed default — then compare:
-
-   - **Your guess matches the agent's proposed default** — treat it as self-evident. Confirm that default back to the agent via `SendMessage` yourself (do not ask the user), and keep a running note of what was auto-confirmed.
-   - **Guesses differ, or the question has no proposed default** — forward the question to the user verbatim, and send their answer back to the same agent via `SendMessage`, as before.
-
-   Repeat until the agent finishes updating the Issue. Never paraphrase or summarize away content that does reach the user or the agent. Before the agent's step 4 confirmation (writing the Issue), show the user the list of auto-confirmed defaults alongside the diff so they can override any before it's written.
-2. Dispatch the `issue-reviewer` agent (foreground) with only the Issue number or URL — no summary of the step 1 discussion. Because you relayed every turn in step 1 yourself, your own re-read is not actually fresh eyes; a cold subagent with zero prior context is. If it finds nothing, proceed.
-
-   For each ambiguity it reports, form your own best-guess answer independently by reading the Issue yourself, before looking at the subagent's guess — then compare:
-
-   - **Your guess matches the subagent's guess** — two independent reads converged on the same interpretation, so treat it as self-evident. Update the Issue to state that interpretation explicitly (note that it was resolved by independent agreement, not the user) and do not ask the user.
-   - **Guesses differ, or either side has no inferable default** — genuinely ambiguous; ask the user directly and update the Issue with their answer.
-
+Invoke `refining-github-issue` with the Issue number or URL.
 Clarify intent, scope, and acceptance criteria before any code is written.
 
 ### 2. Decide whether to decompose
@@ -113,7 +99,7 @@ Invoke `finishing-pull-request` to merge the PR and clean up the topic branch.
 
 | Step | Skill |
 | ---- | ----- |
-| 1 | `issue-refiner` (agent), then `issue-reviewer` (agent) |
+| 1 | `refining-github-issue` |
 | 2 | `decomposing-github-issue` |
 | 3 | `creating-branch` |
 | 6 | `review-and-fix` (light depth if split, full otherwise) |
