@@ -239,6 +239,17 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   Wait for the user's decision before acting. After resolving (or restarting
   and re-reaching this step), resume polling with `as-poll-until-approved`.
 
+  **`reviewDecision` stuck at `CHANGES_REQUESTED`/`COMMENTED` with all threads
+  resolved and no unresolved comments left:** a bot (e.g. CodeRabbit) can
+  reply accepting a rebuttal and resolve the thread without submitting a new
+  review — `reviewDecision` only changes when the bot submits an actual
+  review verdict, and a thread reply/resolve isn't one. Since no new commit
+  was pushed, `@coderabbitai review` gets refused ("Already reviewed the last
+  commit"); post `@coderabbitai full review` instead to force a fresh review
+  pass, then resume polling. Don't restart from Step 1 or poll indefinitely
+  in this state — there's nothing left to act on until the bot submits its
+  new verdict.
+
 ## Notes
 
 - `path` and `line` identify the exact location; read the file directly for

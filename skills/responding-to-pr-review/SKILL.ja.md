@@ -52,6 +52,30 @@ gh pr-review review view <PR_NUMBER> -R <OWNER/REPO> | jq '[.reviews[]?.comments
 - `is_outdated`：diff が変わりコメントの参照先が失効した場合 `true`
 - `thread_comments`：スレッド内にすでに投稿された返信の配列
 
+**このコマンドの結果が0件の場合、「対応不要」と判断する前にレビューの承認状況を確認する：**
+
+```bash
+gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecision
+gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviews --jq '.reviews[] | "[\(.author.login) / \(.state)]\n\(.body)"'
+```
+
+`reviewDecision` が `CHANGES_REQUESTED` または `COMMENTED` にもかかわらずインライン
+スレッドが存在しない場合、レビュアーのインラインコメントが投稿に失敗している。
+CodeRabbit はこの場合レビュー本文の冒頭で明示的にその旨を示す
+（"Inline review comments failed to post"）。このとき指摘内容はレビュー本文のみに
+含まれ、ファイルと行ごとに列挙するセクションがある。これらの指摘をコメント一覧として
+扱い、Step 3 の手順どおりに評価する。
+
+このケースでは返信先のスレッドが存在しない。Step 5 のスレッドごとの返信の代わりに、
+すべての指摘に対する判定をまとめた PR レベルのコメントを1件投稿する：
+
+```bash
+gh pr comment <PR_NUMBER> -R <OWNER/REPO> --body-file <path>
+```
+
+インラインの heredoc ではなく `--body-file` を使う：本文が長いとシェルコマンドガードに
+引っかかりやすく、また heredoc のバッククォートや `$` のクォート問題も避けられる。
+
 ### Step 2：対応済みコメントのスキップ
 
 内容を評価する前に、以下のいずれかに該当するコメントはスキップする：
@@ -212,6 +236,17 @@ gh pr view <PR_NUMBER> -R <OWNER/REPO> --json reviewDecision --jq .reviewDecisio
   ユーザーの判断を待ってから実行する。resolve（または Step 1 からの再開後
   再びこのステップに到達した場合）の後、`as-poll-until-approved` で
   ポーリングを再開する。
+
+  **すべてのスレッドが resolve 済みで未解決コメントもないのに `reviewDecision` が
+  `CHANGES_REQUESTED`／`COMMENTED` のまま変わらない場合：** ボット（CodeRabbit
+  など）が反論を受け入れる返信をしてスレッドを resolve しても、新しいレビューを
+  提出するとは限らない。`reviewDecision` はボットが実際のレビュー判定を提出した
+  ときのみ変化し、スレッドへの返信や resolve はそれに該当しない。新しいコミットを
+  プッシュしていないため `@coderabbitai review` は拒否される（"Already reviewed
+  the last commit"）。代わりに `@coderabbitai full review` を投稿して強制的に
+  新しいレビューを走らせ、ポーリングを再開する。この状態では Step 1 からの再開や
+  無限のポーリングは行わない：ボットが新しい判定を提出するまで、他に対応できる
+  ことはない。
 
 ## 備考
 
