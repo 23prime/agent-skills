@@ -70,7 +70,10 @@ alias = "mc"
 
 [tasks.view-skills-md]
 description = "View all Markdown files under skills/ by mo"
-run = "mo --no-open skills/**/*.md "
+usage = '''
+flag "-p --port <port>" default="62750" help="Port for the mo server"
+'''
+run = "mo --no-open --port ${usage_port} skills/**/*.md "
 alias = "vsm"
 
 # Link
