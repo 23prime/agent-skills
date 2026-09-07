@@ -14,6 +14,8 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 - Write in English.
 - Scopes are not used.
+- Keep line 1 to 50 characters or fewer; never exceed 72.
+- Default to a title-only commit message (no body). Add a body only when the *why* is genuinely non-obvious from the diff — never to restate *what* changed.
 
 ## Types
 

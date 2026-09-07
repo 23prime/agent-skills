@@ -47,7 +47,8 @@ Key rules:
 - Format: `<type>: <concise summary>`
 - Write in English
 - Summarize the *why*, not just the *what*
-- Add an optional body (line 3+) only when the reason or context is non-obvious
+- Keep line 1 to 50 characters or fewer; never exceed 72
+- Default to a title-only message — add a body (line 3+) only when the reason or context is genuinely non-obvious
 
 ### 5. Confirm with the user — only when committing directly to the default branch
 
