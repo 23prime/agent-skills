@@ -1,0 +1,5 @@
+# List of tool repositories to release (one name per line).
+# Each must have a project-local `release` skill at .claude/skills/release/SKILL.md.
+# Copy this file to release_targets.txt and edit it for your environment.
+# repo-name-1
+# repo-name-2

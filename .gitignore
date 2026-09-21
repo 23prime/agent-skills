@@ -2,4 +2,6 @@
 __pycache__/
 *.zip
 skills/sync-template/sync_targets.txt
+skills/releasing-tools/release_targets.txt
+skills/synced/
 docs/superpowers/
