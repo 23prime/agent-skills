@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#MISE description="Symlink each skill and agent into your Claude directory."
+#USAGE arg "<claude_home>" help="Path to your Claude home directory." default="~/.claude"
+set -euo pipefail
+
+claude_home="${usage_claude_home/#\~/$HOME}"
+repo="$(pwd)"
+
+mkdir -p "$claude_home/skills" "$claude_home/agents"
+
+for src in "$repo"/skills/*/ "$repo"/agents/*.md; do
+  kind="$(basename "$(dirname "${src%/}")")"
+  ln -sfn "${src%/}" "$claude_home/$kind/$(basename "${src%/}")"
+done

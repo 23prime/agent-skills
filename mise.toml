@@ -75,14 +75,3 @@ flag "-p --port <port>" default="62750" help="Port for the mo server"
 '''
 run = "mo --no-open --port ${usage_port} skills/**/*.md "
 alias = "vsm"
-
-# Link
-[tasks.link]
-description = "Create a symbolic link to your each Claude directory."
-usage = '''
-arg "<claude_home>" help="Path to your Claude home directory." default="~/.claude"
-'''
-run = [
-  "ln -sfn $(pwd)/skills ${usage_claude_home}/skills",
-  "ln -sfn $(pwd)/agents ${usage_claude_home}/agents",
-]
