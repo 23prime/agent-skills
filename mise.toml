@@ -15,7 +15,7 @@ node = "26"
 
 # Markdown
 markdownlint-cli2 = "0.24.1"
-"github:k1LoW/mo" = "1.8.0"
+"github:k1LoW/mo" = "1.8.2"
 
 # Git
 lefthook = "2"
